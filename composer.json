@@ -1,0 +1,22 @@
+{
+    "name": "lucas_albuquerque/login_system",
+    "description": "Basic login system using object oriented concepts",
+    "type": "project",
+    "autoload": {
+        "classmap": [
+            "./assets/Infrastructure/ConnectionController.php"
+        ],
+        "psr-4": {
+            "LucasAlbuquerque\\LoginSystem\\": "assets/"
+        }
+    },
+    "authors": [
+        {
+            "name": "Lucas Albuquerque"
+        }
+    ],
+    "require": {
+      "ext-mysqli": "*",
+        "ext-pdo": "*"
+    }
+}
