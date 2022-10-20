@@ -20,10 +20,10 @@ class LoginController implements ClassHandlerInterface
 
     public function handle(): void
     {
-        $this->currentLoginFunction();
+        $this->authenticate();
     }
 
-    private function currentLoginFunction()
+    private function authenticate()
     {
 
         $userName = filter_input(INPUT_POST, 'username', FILTER_SANITIZE_STRING);
@@ -32,14 +32,7 @@ class LoginController implements ClassHandlerInterface
         if(!$this->checkLoginState()){
             if(isset($userName) && isset($password)) {
 
-                $query = "SELECT * FROM users WHERE name = :username AND password = :password";
-
-                $statement = $this->connection->prepare($query);
-                $statement->bindValue(':username', $userName);
-                $statement->bindValue(':password', $password);
-                $statement->execute();
-
-                $user = $statement->fetch(PDO::FETCH_ASSOC);
+                $user = $this->findUser($userName, $password);
 
                 if($user['id'] > 0){
                     $this->createRecord($user['id'], $user['name']);
@@ -183,5 +176,18 @@ class LoginController implements ClassHandlerInterface
         $statement = $this->connection->prepare($deleteQuery);
         $statement->bindValue(':user_id', $currentSession['user_id']);
         $statement->execute();
+    }
+
+    private function findUser($userName, $password)
+    {
+        $query = "SELECT * FROM users WHERE name = :username AND password = :password";
+
+        $statement = $this->connection->prepare($query);
+        $statement->bindValue(':username', $userName);
+        $statement->bindValue(':password', $password);
+        $statement->execute();
+
+        return $statement->fetch(PDO::FETCH_ASSOC);
+
     }
 }
