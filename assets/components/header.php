@@ -1,6 +1,11 @@
 <?php
 require './vendor/autoload.php';
 
+use LucasAlbuquerque\LoginSystem\Controller\LoginController;
+
+$controller = new LoginController();
+$check = $controller->checkLoginState();
+
 //use LucasAlbuquerque\LoginSystem\Infrastructure\DatabaseConnection;
 //
 //$pdo = DatabaseConnection::connect();
@@ -20,12 +25,16 @@ require './vendor/autoload.php';
 
 <body>
     <header>
+
         <nav class='navbar'>
             <ul>
                 <li><a href="/home">Home</a></li>
                 <li><a href="/login">Login</a></li>
                 <li><a href="/register">Sign in</a></li>
-                <li><a href="#">Logout</a></li>
+                <?php if ($check){?>
+                <li><a href="/logout">Logout</a></li>
+                <?php }?>
             </ul>
         </nav>
+
     </header>

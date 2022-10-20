@@ -5,7 +5,6 @@ use LucasAlbuquerque\LoginSystem\Infrastructure\DatabaseConnection;
 
 
 $pdo = DatabaseConnection::connect('localhost', 'login_system', 'root', '');
-
 $pathInfo = $_SERVER['PATH_INFO'];
 $routes = require __DIR__ . '/routes/routes.php';
 

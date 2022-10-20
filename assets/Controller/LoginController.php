@@ -10,6 +10,7 @@ class LoginController implements ClassHandlerInterface
 {
 
     private \PDO $connection;
+    private string $redirect;
 
     public function __construct()
     {
@@ -123,12 +124,7 @@ class LoginController implements ClassHandlerInterface
     private function createRecord($userId, $userName): void
     {
 
-        $deleteQuery = "DELETE FROM sessions WHERE user_id = :user_id;";
-        $insertQuery = "INSERT INTO sessions (user_id, token, serial, date) VALUES (:user_id, :token, :serial, :date)";
-
-        $deleteStatement = $this->connection->prepare($deleteQuery);
-        $deleteStatement->bindValue(':user_id', $userId);
-        $deleteStatement->execute();
+        $query = "INSERT INTO sessions (user_id, token, serial, date) VALUES (:user_id, :token, :serial, :date)";
 
         $token = $this->createString(32);
         $serial = $this->createString(32);
@@ -136,12 +132,12 @@ class LoginController implements ClassHandlerInterface
         $this->createCoockie($userName, $userId, $token, $serial);
         $this->createSession($userName, $userId, $token, $serial);
 
-        $insertStatement = $this->connection->prepare($insertQuery);
-        $insertStatement->bindValue(':user_id', $userId);
-        $insertStatement->bindValue(':token', $token);
-        $insertStatement->bindValue(':serial', $serial);
-        $insertStatement->bindValue(':date', '20/12/1999');
-        $insertStatement->execute();
+        $statement = $this->connection->prepare($query);
+        $statement->bindValue(':user_id', $userId);
+        $statement->bindValue(':token', $token);
+        $statement->bindValue(':serial', $serial);
+        $statement->bindValue(':date', '20/12/1999');
+        $statement->execute();
 
     }
 
@@ -155,7 +151,7 @@ class LoginController implements ClassHandlerInterface
             setcookie('serial', $serial, time() + (86400) * 30, "/");
     }
 
-    private function createSession($userName, $userId, $token, $serial)
+    private function createSession($userName, $userId, $token, $serial):void
     {
         if(!isset($_SESSION)){
             session_start();
@@ -166,5 +162,26 @@ class LoginController implements ClassHandlerInterface
             $_SESSION['serial'] = $serial;
     }
 
+    private function deleteCoockies(): void
+    {
+        setcookie('user_id', '', time() - 1, "/");
+        setcookie('user_name', '', time() - 1, "/");
+        setcookie('token', '', time() - 1, "/");
+        setcookie('serial', '', - 1, "/");
+        header($this->redirect);
+    }
 
+    private function deleteSession($userId):void
+    {
+        $searchQuery = "SELECT * FROM sessions WHERE user_id = :user_id";
+        $searchStatement = $this->connection->prepare($searchQuery);
+        $searchStatement->bindValue(':user_id', $userId);
+        $searchStatement->execute();
+        $currentSession = $searchStatement->fetch(\PDO::FETCH_ASSOC);
+
+        $deleteQuery = "DELETE FROM sessions WHERE user_id = :user_id;";
+        $statement = $this->connection->prepare($deleteQuery);
+        $statement->bindValue(':user_id', $currentSession['user_id']);
+        $statement->execute();
+    }
 }
