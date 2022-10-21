@@ -3,7 +3,7 @@
 namespace LucasAlbuquerque\LoginSystem\View;
 
 use LucasAlbuquerque\LoginSystem\Handler\ClassHandlerInterface;
-use LucasAlbuquerque\LoginSystem\Helpers\RenderHtmlTrait;
+use LucasAlbuquerque\LoginSystem\Traits\RenderHtmlTrait;
 
 class LoginView implements ClassHandlerInterface
 {

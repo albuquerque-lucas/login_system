@@ -1,6 +1,6 @@
 <?php
 
-namespace LucasAlbuquerque\LoginSystem\Helpers;
+namespace LucasAlbuquerque\LoginSystem\Traits;
 
 trait RenderHtmlTrait
 {

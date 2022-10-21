@@ -19,7 +19,7 @@ class LogoutController implements ClassHandlerInterface
 
     public function handle(): void
     {
-        $this->deleteSession($_GET['user_id']);
+        $this->deleteSession();
         $this->deleteCoockies();
     }
 
