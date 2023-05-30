@@ -27,6 +27,8 @@ The idea for the logic and construction of this project was inspired by an artic
 5. Start a local server: `php -S localhost:port`
 6. Access the application in your browser: [http://localhost:port](http://localhost:port)
 
+**Note:** Before running the application, ensure that you have a MySQL server running and properly configured. Update the database connection details in the project files, such as `ConnectionController.php`, to match your MySQL server settings.
+
 ## Features
 
 ✨ The PHP Login System comes with the following features to showcase my login skills:
