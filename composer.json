@@ -4,7 +4,7 @@
     "type": "project",
     "autoload": {
         "classmap": [
-            "./assets/Infrastructure/ConnectionController.php"
+            "./assets/Infrastructure/DatabaseConnection.php"
         ],
         "psr-4": {
             "LucasAlbuquerque\\LoginSystem\\": "assets/"
