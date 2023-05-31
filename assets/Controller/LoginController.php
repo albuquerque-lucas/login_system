@@ -54,24 +54,24 @@ class LoginController implements ClassHandlerInterface
     public function checkLoginState()
     {
 
-     if(!isset($_SESSION)){
+    if(!isset($_SESSION)){
         session_start();
-     }
+    }
 
-     if(isset($_COOKIE['user_id']) && isset($_COOKIE['token']) && isset($_COOKIE['serial'])){
+    if(isset($_COOKIE['user_id']) && isset($_COOKIE['token']) && isset($_COOKIE['serial'])){
 
          $query = "SELECT * FROM sessions WHERE user_id = :userId AND token = :token AND serial = :serial;";
-         $statement = $this->connection->prepare($query);
+        $statement = $this->connection->prepare($query);
 
-         $id = $_COOKIE['user_id'];
-         $token = $_COOKIE['token'];
-         $serial = $_COOKIE['serial'];
+        $id = $_COOKIE['user_id'];
+        $token = $_COOKIE['token'];
+        $serial = $_COOKIE['serial'];
 
-         $statement->bindValue(':userId', $id, PDO::PARAM_INT);
-         $statement->bindValue('token', $token, PDO::PARAM_INT);
-         $statement->bindValue('serial', $serial, PDO::PARAM_INT);
+        $statement->bindValue(':userId', $id, PDO::PARAM_INT);
+        $statement->bindValue('token', $token, PDO::PARAM_INT);
+        $statement->bindValue('serial', $serial, PDO::PARAM_INT);
 
-         $statement->execute();
+        $statement->execute();
 
         $session = $statement->fetch(PDO::FETCH_ASSOC);
 
