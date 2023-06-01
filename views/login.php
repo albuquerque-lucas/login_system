@@ -20,6 +20,7 @@ include './assets/components/header.php';
                 <label class="form-check-label" for="check">Check me out</label>
             </div>
             <button type="submit" class="btn btn-primary">Submit</button>
+            <a href='/register'>Register</a>
         </form>
     </div>
 

@@ -3,7 +3,7 @@ include './assets/components/header.php'
 ?>
 
     <div class="container d-flex flex-column align-items-center mt-5">
-        <form>
+        <form method="post" action="/create-user">
             <div class="mb-3">
                 <label for="username" class="form-label">User name</label>
                 <input type="text" class="form-control" id="username" name="username">
@@ -21,7 +21,7 @@ include './assets/components/header.php'
                 <input type="checkbox" class="form-check-input" id="check" name="check">
                 <label class="form-check-label" for="check">Check me out</label>
             </div>
-            <button type="submit" class="btn btn-primary">Submit</button>
+            <button type="submit" class="btn btn-primary">Create</button>
         </form>
     </div>
 
