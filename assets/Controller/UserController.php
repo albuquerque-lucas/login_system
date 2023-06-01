@@ -37,6 +37,7 @@ class UserController implements ClassHandlerInterface
         $statement->bindValue(':userpassword', $userPassword);
         $statement->bindValue(':userstatus', 1);
         $statement->execute();
+        header($this->redirectAuth);
       } else{
         echo "<h1>Usuário já existente.</h1>";
       }
