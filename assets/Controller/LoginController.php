@@ -43,7 +43,8 @@ class LoginController implements ClassHandlerInterface
                 }
 
             }else{
-                header($this->redirect);
+                echo "userName e password não definidos.";
+                // header($this->redirect);
             }
         } else{
             echo 'Bem vindo, ' . $_SESSION['user_name'] . '! ' . 'Você já está logado!';
