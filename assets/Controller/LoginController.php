@@ -8,14 +8,15 @@ use PDO;
 
 class LoginController implements ClassHandlerInterface
 {
-
     private \PDO $connection;
-    private string $redirect;
+    private string $redirectHome;
+    private string $redirectLogin;
 
     public function __construct()
     {
         $this->connection = DatabaseConnection::connect();
-        $this->redirect =  'Location: /home';
+        $this->redirectHome =  'Location: /home';
+        $this->redirectLogin = 'Location: /login';
     }
 
     public function handle(): void
@@ -25,36 +26,32 @@ class LoginController implements ClassHandlerInterface
 
     private function authenticate()
     {
-
-        $userName = filter_input(INPUT_POST, 'user_name', FILTER_SANITIZE_STRING);
-        $password = filter_input(INPUT_POST, 'user_password', FILTER_SANITIZE_STRING);
+        $userName = filter_input(INPUT_POST, 'username', FILTER_UNSAFE_RAW);
+        $password = filter_input(INPUT_POST, 'password', FILTER_UNSAFE_RAW);
 
         if(!$this->checkLoginState()){
             if(isset($userName) && isset($password)) {
-
                 $user = $this->findUser($userName, $password);
 
                 if($user['id'] > 0){
                     $this->createRecord($user['user_id'], $user['user_name']);
-                    header($this->redirect);
+                    header($this->redirectHome);
                 } else{
                     echo "Usuário ou senha inválidos!";
                     exit();
                 }
-
             }else{
-                echo "userName e password não definidos.";
-                // header($this->redirect);
+                echo "<p>Não foi possível verificar valores dos inputs.</p>";
+                // header($this->redirectLogin);
             }
         } else{
             echo 'Bem vindo, ' . $_SESSION['user_name'] . '! ' . 'Você já está logado!';
-            header($this->redirect);
+            header($this->redirectHome);
         }
     }
 
     public function checkLoginState()
     {
-
     if(!isset($_SESSION)){
         session_start();
     }
@@ -87,13 +84,9 @@ class LoginController implements ClassHandlerInterface
                         return true;
                     }
                 }
-
             }
         }
-
-;
     }
-
     }
 
     private function createString($length): string
@@ -104,7 +97,7 @@ class LoginController implements ClassHandlerInterface
 
     private function createRecord($userId, $userName): void
     {
-        $query = "INSERT INTO sessions (user_id, sessions_token, sessions_serial, sessions_datetime) VALUES (:user_id, :token, :serial, :date)";
+        $query = "INSERT INTO sessions (sessions_userid, sessions_token, sessions_serial, sessions_datetime) VALUES (:userid, :token, :serial, :date)";
         $token = $this->createString(32);
         $serial = $this->createString(32);
 
@@ -112,12 +105,11 @@ class LoginController implements ClassHandlerInterface
         $this->createSession($userName, $userId, $token, $serial);
 
         $statement = $this->connection->prepare($query);
-        $statement->bindValue(':user_id', $userId);
+        $statement->bindValue(':userid', $userId);
         $statement->bindValue(':token', $token);
         $statement->bindValue(':serial', $serial);
         $statement->bindValue(':date', '20/12/1999');
         $statement->execute();
-
     }
 
 
@@ -147,7 +139,7 @@ class LoginController implements ClassHandlerInterface
         setcookie('user_name', '', time() - 1, "/");
         setcookie('token', '', time() - 1, "/");
         setcookie('serial', '', - 1, "/");
-        header($this->redirect);
+        header($this->redirectHome);
     }
 
     private function deleteSession($userId):void
@@ -166,7 +158,7 @@ class LoginController implements ClassHandlerInterface
 
     private function findUser($userName, $password)
     {
-        $query = "SELECT * FROM users WHERE name = :username AND password = :password";
+        $query = "SELECT * FROM users WHERE user_name = :username AND user_password = :password";
 
         $statement = $this->connection->prepare($query);
         $statement->bindValue(':username', $userName);
