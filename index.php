@@ -4,9 +4,8 @@ require 'vendor/autoload.php';
 use LucasAlbuquerque\LoginSystem\Infrastructure\DatabaseConnection;
 
 
-$pdo = DatabaseConnection::connect('localhost', 'login_system', 'root', 'senha-mysql');
+$pdo = DatabaseConnection::connect();
 $pathInfo = $_SERVER['PATH_INFO'];
-var_dump($pathInfo);
 $routes = require __DIR__ . '/routes/routes.php';
 
 $controllerClass = $routes[$pathInfo];

@@ -26,8 +26,8 @@ class LoginController implements ClassHandlerInterface
     private function authenticate()
     {
 
-        $userName = filter_input(INPUT_POST, 'username', FILTER_SANITIZE_STRING);
-        $password = filter_input(INPUT_POST, 'password', FILTER_SANITIZE_STRING);
+        $userName = filter_input(INPUT_POST, 'user_name', FILTER_SANITIZE_STRING);
+        $password = filter_input(INPUT_POST, 'user_password', FILTER_SANITIZE_STRING);
 
         if(!$this->checkLoginState()){
             if(isset($userName) && isset($password)) {
@@ -35,7 +35,7 @@ class LoginController implements ClassHandlerInterface
                 $user = $this->findUser($userName, $password);
 
                 if($user['id'] > 0){
-                    $this->createRecord($user['id'], $user['name']);
+                    $this->createRecord($user['user_id'], $user['user_name']);
                     header($this->redirect);
                 } else{
                     echo "Usuário ou senha inválidos!";
@@ -58,18 +58,18 @@ class LoginController implements ClassHandlerInterface
         session_start();
     }
 
-    if(isset($_COOKIE['user_id']) && isset($_COOKIE['token']) && isset($_COOKIE['serial'])){
+    if(isset($_COOKIE['user_id']) && isset($_COOKIE['sessions_token']) && isset($_COOKIE['sessions_serial'])){
 
-         $query = "SELECT * FROM sessions WHERE user_id = :userId AND token = :token AND serial = :serial;";
+         $query = "SELECT * FROM sessions WHERE user_id = :userId AND sessions_token = :token AND sessions_serial = :serial;";
         $statement = $this->connection->prepare($query);
 
         $id = $_COOKIE['user_id'];
-        $token = $_COOKIE['token'];
-        $serial = $_COOKIE['serial'];
+        $token = $_COOKIE['sessions_token'];
+        $serial = $_COOKIE['sessions_serial'];
 
         $statement->bindValue(':userId', $id, PDO::PARAM_INT);
-        $statement->bindValue('token', $token, PDO::PARAM_INT);
-        $statement->bindValue('serial', $serial, PDO::PARAM_INT);
+        $statement->bindValue(':token', $token, PDO::PARAM_INT);
+        $statement->bindValue(':serial', $serial, PDO::PARAM_INT);
 
         $statement->execute();
 
@@ -77,12 +77,12 @@ class LoginController implements ClassHandlerInterface
 
         if($session['user_id'] > 0)
         {
-            if($session['user_id'] == $_COOKIE['user_id'] && $session['token'] == $_COOKIE['token'] && $session['serial'] == $_COOKIE['serial']){
+            if($session['user_id'] == $_COOKIE['user_id'] && $session['sessions_token'] == $_COOKIE['sessions_token'] && $session['sessions_serial'] == $_COOKIE['sessions_serial']){
                 {
-                    if($session['user_id'] == $_SESSION['id'] && $session['token'] == $_SESSION['token'] && $session['serial'] == $_SESSION['serial']){
+                    if($session['user_id'] == $_SESSION['sessions_id'] && $session['sessions_token'] == $_SESSION['sessions_token'] && $session['sessions_serial'] == $_SESSION['sessions_serial']){
                         return true;
                     } else{
-                        $this->createSession($_COOKIE['user_name'], $_COOKIE['user_id'], $_COOKIE['token'], $_COOKIE['serial']);
+                        $this->createSession($_COOKIE['user_name'], $_COOKIE['user_id'], $_COOKIE['sessions_token'], $_COOKIE['sessions_serial']);
                         return true;
                     }
                 }
@@ -98,27 +98,12 @@ class LoginController implements ClassHandlerInterface
     private function createString($length): string
     {
         $string = "1qaz2wsx3edc4rfv5tgb6yhn7ujm8ik9ol0pQAZWSXEDCRFVTGBYHNUJMIKOLP";
-//        $s = '';
-//        $r_new = '';
-//        $r_old = '';
-//
-//        for($i=1; $i < $length; $i++){
-//            while($r_old == $r_new)
-//            {
-//                $r_new = rand(0, 61);
-//            }
-//            $r_old = $r_new;
-//            $s = $s.$string[$r_new];
-//        }
-
         return substr(str_shuffle($string), 0, 32);
     }
 
     private function createRecord($userId, $userName): void
     {
-
-        $query = "INSERT INTO sessions (user_id, token, serial, date) VALUES (:user_id, :token, :serial, :date)";
-
+        $query = "INSERT INTO sessions (user_id, sessions_token, sessions_serial, sessions_datetime) VALUES (:user_id, :token, :serial, :date)";
         $token = $this->createString(32);
         $serial = $this->createString(32);
 
