@@ -36,9 +36,9 @@ class UserController implements ClassHandlerInterface
         $statement->bindValue(':userpassword', $userPassword);
         $statement->bindValue(':userstatus', 1);
         $statement->execute();
-        $expiration = time() + 3600;
-        setcookie('tempUserName', $userName, $expiration);
-        setcookie('tempUserPassword', $userPassword, $expiration);
+        session_start();
+        $_SESSION['tempUserName'] = $userName;
+        $_SESSION['tempUserPassword'] = $userPassword;
         header($this->redirectAuth);
       } else{
         echo "<h1>Usuário já existente.</h1>";

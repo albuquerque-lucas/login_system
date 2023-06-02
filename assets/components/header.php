@@ -1,14 +1,5 @@
 <?php
 require './vendor/autoload.php';
-
-use LucasAlbuquerque\LoginSystem\Controller\LoginController;
-
-$controller = new LoginController();
-$check = $controller->checkLoginState();
-
-//use LucasAlbuquerque\LoginSystem\Infrastructure\DatabaseConnection;
-//
-//$pdo = DatabaseConnection::connect();
 ?>
 <!DOCTYPE html>
 <html lang="en">

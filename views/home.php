@@ -1,5 +1,11 @@
-<?php
-include './assets/components/header.php';
+
+    
+    <?php
+    use LucasAlbuquerque\LoginSystem\Controller\AuthController;
+    $authStatus = new AuthController();
+    $sessionStatus = $authStatus->checkSessionStatus();
+
+    include './assets/components/header.php';
 ?>
 
 
@@ -9,8 +15,9 @@ include './assets/components/header.php';
 
     <div id="mensagemView"></div>
 
-    <?php if ($check){ ?>
-
+    <?php 
+        if ($sessionStatus) {
+    ?>
         <form class="form" action="/create" method="post">
             <div class="form-group">
                 <label for="name">Nome</label>
@@ -24,9 +31,7 @@ include './assets/components/header.php';
 
             <button class="btn btn-primary mt-2" type="submit">Incluir</button>
         </form>
-
     <?php } ?>
-
     <br>
     <br>
     <div id="negociacoesView">

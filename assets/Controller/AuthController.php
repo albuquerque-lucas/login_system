@@ -5,9 +5,8 @@ namespace LucasAlbuquerque\LoginSystem\Controller;
 use LucasAlbuquerque\LoginSystem\Handler\ClassHandlerInterface;
 use LucasAlbuquerque\LoginSystem\Infrastructure\DatabaseConnection;
 use PDO;
-use Symfony\Bridge\Doctrine\Middleware\Debug\Statement;
 
-class LoginController implements ClassHandlerInterface
+class AuthController implements ClassHandlerInterface
 {
     private \PDO $connection;
     private string $redirectHome;
@@ -32,8 +31,8 @@ class LoginController implements ClassHandlerInterface
 
         if(!$this->checkLoginState()){
 
-            $tempUserName = $_COOKIE['tempUserName'];
-            $tempUserPassword = $_COOKIE['tempUserPassword'];
+            $tempUserName = $_SESSION['tempUserName'];
+            $tempUserPassword = $_SESSION['tempUserPassword'];
 
             $userCheckQuery = "SELECT user_name, user_password FROM users WHERE user_name = :username AND user_password = :password";
             $statement = $this->connection->prepare($userCheckQuery);
@@ -41,15 +40,13 @@ class LoginController implements ClassHandlerInterface
             $statement->bindValue(':password', $tempUserPassword);
             $statement->execute();
             $result = $statement->fetch(PDO::FETCH_ASSOC);
+
             if(isset($userName) && isset($password) || $result) {
                 if($userName || $password) {
                     $user = $this->findUser($userName, $password);
                 } else if ($result) {
                     $user = $this->findUser($tempUserName, $tempUserPassword);
                 };
-
-                // var_dump($user);
-                // exit();
                 if($user['user_id'] > 0){
                     $this->createRecord($user['user_id'], $user['user_name']);
                     header($this->redirectHome);
@@ -117,7 +114,7 @@ class LoginController implements ClassHandlerInterface
         $query = "INSERT INTO sessions (sessions_userid, sessions_token, sessions_serial, sessions_datetime) VALUES (:userid, :token, :serial, :date)";
         $token = $this->createString(32);
         $serial = $this->createString(32);
-
+        
         $this->createCoockie($userName, $userId, $token, $serial);
         $this->createSession($userName, $userId, $token, $serial);
 
@@ -171,6 +168,7 @@ class LoginController implements ClassHandlerInterface
         $statement = $this->connection->prepare($deleteQuery);
         $statement->bindValue(':user_id', $currentSession['user_id']);
         $statement->execute();
+        session_destroy();
     }
 
     private function findUser($userName, $password)
@@ -181,8 +179,20 @@ class LoginController implements ClassHandlerInterface
         $statement->bindValue(':username', $userName);
         $statement->bindValue(':password', $password);
         $statement->execute();
-
         return $statement->fetch(PDO::FETCH_ASSOC);
 
+    }
+
+    public function checkSessionStatus()
+    {
+        $query = "SELECT * FROM sessions";
+        $statement = $this->connection->prepare($query);
+        $statement->execute();
+        $result = $statement->fetch(PDO::FETCH_ASSOC);
+        if(!$result){
+            return false;
+        } else {
+            return true;
+        }
     }
 }
