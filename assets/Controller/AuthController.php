@@ -21,7 +21,18 @@ class AuthController implements ClassHandlerInterface
 
     public function handle(): void
     {
-        $this->authenticate();
+
+        switch($_SERVER['path_info']){
+            case '/authenticate':
+                $this->authenticate();
+                break;
+            case '/logout':
+                $this->deleteSession($_POST['userid']);
+                break;
+            default:
+            header($this->redirectLogin);
+            break;
+        }
     }
 
     private function authenticate()

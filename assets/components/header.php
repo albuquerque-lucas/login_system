@@ -28,8 +28,8 @@ list($status, $user) = $sessionInfo;
                 <li><a href="/home">Home</a></li>
                 <li><a href="/register">Sign in</a></li>
                 <?php if ($status){?>
-                <form action="/logout">
-                <input type="hidden" name="session_id" value="<?php echo $user['user_id']; ?>">
+                <form action="/logout" method="post">
+                <input type="hidden" name="userid" value="<?php echo $user['user_id']; ?>">
                     <li>
                         <button type="submit">Logout</button>
                     </li>

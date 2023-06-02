@@ -1,7 +1,7 @@
 <?php
 
 
-use LucasAlbuquerque\LoginSystem\Controller\{AuthController, LogoutController, TaskController, UserController};
+use LucasAlbuquerque\LoginSystem\Controller\{AuthController, TaskController, UserController};
 use LucasAlbuquerque\LoginSystem\View\{LoginView, TaskView, RegisterView};
 
 $routes = [
@@ -12,7 +12,7 @@ $routes = [
     '/concludeTask' => TaskController::class,
     '/login' => LoginView::class,
     '/authenticate' => AuthController::class,
-    '/logout' => LogoutController::class,
+    '/logout' => AuthController::class,
     '/register' => RegisterView::class,
     '/create-user' => UserController::class, 
 ];

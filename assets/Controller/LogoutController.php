@@ -10,6 +10,7 @@ class LogoutController implements ClassHandlerInterface
 {
 
     private string $redirect;
+    private \PDO $connection;
 
     public function __construct()
     {
