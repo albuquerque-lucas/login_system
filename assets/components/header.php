@@ -1,5 +1,9 @@
 <?php
 require './vendor/autoload.php';
+use LucasAlbuquerque\LoginSystem\Controller\AuthController;
+$authController = new AuthController();
+$sessionInfo = $authController->checkSessionStatus();
+list($status, $user) = $sessionInfo;
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -23,8 +27,14 @@ require './vendor/autoload.php';
             <ul>
                 <li><a href="/home">Home</a></li>
                 <li><a href="/register">Sign in</a></li>
-                <?php if ($check){?>
-                <li><a href="/logout">Logout</a></li>
+                <?php if ($status){?>
+                <form action="/logout">
+                <input type="hidden" name="session_id" value="<?php echo $user['user_id']; ?>">
+                    <li>
+                        <button type="submit">Logout</button>
+                    </li>
+                </form>
+
                 <?php } else{?>
                     <li><a href="/login">Login</a></li>
                     <?php } ?>

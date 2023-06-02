@@ -156,7 +156,7 @@ class AuthController implements ClassHandlerInterface
         header($this->redirectHome);
     }
 
-    private function deleteSession($userId):void
+    public function deleteSession($userId):void
     {
         $searchQuery = "SELECT * FROM sessions WHERE user_id = :user_id";
         $searchStatement = $this->connection->prepare($searchQuery);
@@ -169,6 +169,7 @@ class AuthController implements ClassHandlerInterface
         $statement->bindValue(':user_id', $currentSession['user_id']);
         $statement->execute();
         session_destroy();
+        header($this->redirectLogin);
     }
 
     private function findUser($userName, $password)
@@ -185,14 +186,21 @@ class AuthController implements ClassHandlerInterface
 
     public function checkSessionStatus()
     {
-        $query = "SELECT * FROM sessions";
-        $statement = $this->connection->prepare($query);
+        $sessionsQuery = "SELECT * FROM sessions";
+        $statement = $this->connection->prepare($sessionsQuery);
         $statement->execute();
         $result = $statement->fetch(PDO::FETCH_ASSOC);
         if(!$result){
-            return false;
+            $status = false;
         } else {
-            return true;
+            $status = true;
+            $sessionsUserId = $result['sessions_userid'];
+            $userNameQuery = "SELECT u.* FROM users u JOIN sessions s ON u.user_id = $sessionsUserId";
+            $userNameStatement = $this->connection->prepare($userNameQuery);
+            $userNameStatement->execute();
+            $user = $userNameStatement->fetch(PDO::FETCH_ASSOC);
         }
+
+        return [$status, $user];
     }
 }

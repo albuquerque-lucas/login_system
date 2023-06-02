@@ -1,22 +1,19 @@
-
-    
-    <?php
-    use LucasAlbuquerque\LoginSystem\Controller\AuthController;
-    $authStatus = new AuthController();
-    $sessionStatus = $authStatus->checkSessionStatus();
-
+<?php
     include './assets/components/header.php';
 ?>
 
-
 <div class="container">
-
     <h1 class="text-center">Tarefas</h1>
-
-    <div id="mensagemView"></div>
+    <div id="mensagemView">
+        <?php 
+            if ($status) {
+        ?>
+            <h3>Seja bem vindo, <?php echo $user['user_name']?>!</h3>
+        <?php } ?>
+    </div>
 
     <?php 
-        if ($sessionStatus) {
+        if ($status) {
     ?>
         <form class="form" action="/create" method="post">
             <div class="form-group">

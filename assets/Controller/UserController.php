@@ -21,7 +21,6 @@ class UserController implements ClassHandlerInterface
       $userName = filter_input(INPUT_POST,'username', FILTER_DEFAULT);
       $userMail = filter_input(INPUT_POST,'email', FILTER_DEFAULT);
       $userPassword = filter_input(INPUT_POST,'password', FILTER_DEFAULT);
-      echo "<h1>Usuário criado.</h1>";
       $this->createUser($userName, $userMail, $userPassword);
     }
 
