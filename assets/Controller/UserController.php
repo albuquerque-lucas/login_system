@@ -5,7 +5,6 @@ namespace LucasAlbuquerque\LoginSystem\Controller;
 use LucasAlbuquerque\LoginSystem\Handler\ClassHandlerInterface;
 use LucasAlbuquerque\LoginSystem\Infrastructure\DatabaseConnection;
 use PDO;
-use Symfony\Bridge\Doctrine\Middleware\Debug\Statement;
 
 class UserController implements ClassHandlerInterface
 {
@@ -37,9 +36,13 @@ class UserController implements ClassHandlerInterface
         $statement->bindValue(':userpassword', $userPassword);
         $statement->bindValue(':userstatus', 1);
         $statement->execute();
+        $expiration = time() + 3600;
+        setcookie('tempUserName', $userName, $expiration);
+        setcookie('tempUserPassword', $userPassword, $expiration);
         header($this->redirectAuth);
       } else{
         echo "<h1>Usuário já existente.</h1>";
+        header($this->redirectAuth);
       }
     }
 
