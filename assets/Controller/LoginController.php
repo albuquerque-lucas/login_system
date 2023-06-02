@@ -5,6 +5,7 @@ namespace LucasAlbuquerque\LoginSystem\Controller;
 use LucasAlbuquerque\LoginSystem\Handler\ClassHandlerInterface;
 use LucasAlbuquerque\LoginSystem\Infrastructure\DatabaseConnection;
 use PDO;
+use Symfony\Bridge\Doctrine\Middleware\Debug\Statement;
 
 class LoginController implements ClassHandlerInterface
 {
@@ -30,10 +31,26 @@ class LoginController implements ClassHandlerInterface
         $password = filter_input(INPUT_POST, 'password', FILTER_UNSAFE_RAW);
 
         if(!$this->checkLoginState()){
-            if(isset($userName) && isset($password)) {
-                $user = $this->findUser($userName, $password);
 
-                if($user['id'] > 0){
+            $tempUserName = $_COOKIE['tempUserName'];
+            $tempUserPassword = $_COOKIE['tempUserPassword'];
+
+            $userCheckQuery = "SELECT user_name, user_password FROM users WHERE user_name = :username AND user_password = :password";
+            $statement = $this->connection->prepare($userCheckQuery);
+            $statement->bindValue(':username', $tempUserName);
+            $statement->bindValue(':password', $tempUserPassword);
+            $statement->execute();
+            $result = $statement->fetch(PDO::FETCH_ASSOC);
+            if(isset($userName) && isset($password) || $result) {
+                if($userName || $password) {
+                    $user = $this->findUser($userName, $password);
+                } else if ($result) {
+                    $user = $this->findUser($tempUserName, $tempUserPassword);
+                };
+
+                // var_dump($user);
+                // exit();
+                if($user['user_id'] > 0){
                     $this->createRecord($user['user_id'], $user['user_name']);
                     header($this->redirectHome);
                 } else{
