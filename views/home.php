@@ -1,16 +1,20 @@
 <?php
-include './assets/components/header.php';
+    include './assets/components/header.php';
 ?>
 
-
 <div class="container">
-
     <h1 class="text-center">Tarefas</h1>
+    <div id="mensagemView">
+        <?php 
+            if ($status) {
+        ?>
+            <h3>Seja bem vindo, <?php echo $user['user_name']?>!</h3>
+        <?php } ?>
+    </div>
 
-    <div id="mensagemView"></div>
-
-    <?php if ($check){ ?>
-
+    <?php 
+        if ($status) {
+    ?>
         <form class="form" action="/create" method="post">
             <div class="form-group">
                 <label for="name">Nome</label>
@@ -24,9 +28,7 @@ include './assets/components/header.php';
 
             <button class="btn btn-primary mt-2" type="submit">Incluir</button>
         </form>
-
     <?php } ?>
-
     <br>
     <br>
     <div id="negociacoesView">

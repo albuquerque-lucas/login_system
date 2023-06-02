@@ -1,14 +1,9 @@
 <?php
 require './vendor/autoload.php';
-
-use LucasAlbuquerque\LoginSystem\Controller\LoginController;
-
-$controller = new LoginController();
-$check = $controller->checkLoginState();
-
-//use LucasAlbuquerque\LoginSystem\Infrastructure\DatabaseConnection;
-//
-//$pdo = DatabaseConnection::connect();
+use LucasAlbuquerque\LoginSystem\Controller\AuthController;
+$authController = new AuthController();
+$sessionInfo = $authController->checkSessionStatus();
+list($status, $user) = $sessionInfo;
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -32,8 +27,14 @@ $check = $controller->checkLoginState();
             <ul>
                 <li><a href="/home">Home</a></li>
                 <li><a href="/register">Sign in</a></li>
-                <?php if ($check){?>
-                <li><a href="/logout">Logout</a></li>
+                <?php if ($status){?>
+                <form action="/logout" method="post">
+                <input type="hidden" name="userid" value="<?php echo $user['user_id']; ?>">
+                    <li>
+                        <button type="submit">Logout</button>
+                    </li>
+                </form>
+
                 <?php } else{?>
                     <li><a href="/login">Login</a></li>
                     <?php } ?>
