@@ -8,7 +8,7 @@
         <?php 
             if ($status) {
         ?>
-            <h3>Seja bem vindo, <?php echo $user['user_name']?>!</h3>
+            <h3>Seja bem vindo, <?php echo $user['user_firstname'].' '.$user['user_lastname']?>!</h3>
         <?php } ?>
     </div>
 

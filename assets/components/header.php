@@ -27,16 +27,16 @@ list($status, $user) = $sessionInfo;
         <nav class='navbar'>
             <ul>
                 <li><a href="/home">Home</a></li>
-                <li><a href="/register">Sign in</a></li>
                 <?php if ($status){?>
-                <form action="/logout" method="post">
-                <input type="hidden" name="userid" value="<?php echo $user['user_id']; ?>">
-                    <li>
-                        <button type="submit">Logout</button>
-                    </li>
-                </form>
-
-                <?php } else{?>
+                    <form action="/logout" method="post">
+                        <input type="hidden" name="userid" value="<?php echo $user['user_id']; ?>">
+                        <li>
+                            <button type="submit">Logout</button>
+                        </li>
+                    </form>
+                    
+                    <?php } else{?>
+                    <li><a href="/register">Sign in</a></li>
                     <li><a href="/login">Login</a></li>
                     <?php } ?>
             </ul>
