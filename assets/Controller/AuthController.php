@@ -2,6 +2,7 @@
 
 namespace LucasAlbuquerque\LoginSystem\Controller;
 
+use Exception;
 use LucasAlbuquerque\LoginSystem\Handler\ClassHandlerInterface;
 use LucasAlbuquerque\LoginSystem\Infrastructure\DatabaseConnection;
 use PDO;
@@ -193,7 +194,15 @@ class AuthController implements ClassHandlerInterface
         $statement->bindValue(':username', $userName);
         $statement->bindValue(':password', $password);
         $statement->execute();
-        return $statement->fetch(PDO::FETCH_ASSOC);
+        $result = $statement->fetch(PDO::FETCH_ASSOC);
+        $userPasswordHash = $result['user_password_hash'];
+
+        if (password_verify($password, $userPasswordHash)) {
+            return $result;
+        } else {
+            echo "<h1>Usuário ou senha inválidos.</h1>";
+            exit();
+        }
 
     }
 
