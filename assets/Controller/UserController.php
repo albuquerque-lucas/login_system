@@ -5,7 +5,6 @@ namespace LucasAlbuquerque\LoginSystem\Controller;
 use LucasAlbuquerque\LoginSystem\Handler\ClassHandlerInterface;
 use LucasAlbuquerque\LoginSystem\Infrastructure\DatabaseConnection;
 use PDO;
-use Symfony\Bridge\Doctrine\Middleware\Debug\Statement;
 
 class UserController implements ClassHandlerInterface
 {
@@ -34,14 +33,17 @@ class UserController implements ClassHandlerInterface
       if(!$user){
         $createQuery = "INSERT INTO users (user_username, user_email, user_password, user_password_hash, user_status, user_firstname, user_lastname)
         VALUES (:username, :usermail, :userpassword, :passwordhash, :userstatus, :firstname, :lastname)";
+        $filteredFirstName = $this->sanitizeString($userFirstName);
+        $filteredLastName = $this->sanitizeString($userLastName);
         $statement = $this->connection->prepare($createQuery);
         $statement->bindValue(':username', $userName);
         $statement->bindValue(':usermail', $userMail);
         $statement->bindValue(':userpassword', $userPassword);
         $statement->bindValue(':passwordhash', $passwordHash);
-        $statement->bindValue(':firstname', $userFirstName);
-        $statement->bindValue(':lastname', $userLastName);
         $statement->bindValue(':userstatus', 1);
+        $statement->bindValue(':firstname', $filteredFirstName);
+        $statement->bindValue(':lastname', $filteredLastName);
+    
         $statement->execute();
         session_start();
         $_SESSION['tempUserName'] = $userName;
@@ -49,7 +51,7 @@ class UserController implements ClassHandlerInterface
         header($this->redirectAuth);
       } else{
         echo "<h1>Usuário já existente.</h1>";
-        header($this->redirectAuth);
+        exit();
       }
     }
 
@@ -63,5 +65,11 @@ class UserController implements ClassHandlerInterface
       $statement->execute();
 
       return $statement->fetch(PDO::FETCH_ASSOC);
+    }
+
+    public function sanitizeString($string)
+    {
+        $filteredString = ucfirst(strtolower(trim($string)));
+        return $filteredString;
     }
 }
