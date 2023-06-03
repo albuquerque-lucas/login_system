@@ -24,18 +24,21 @@ class UserController implements ClassHandlerInterface
       $userPassword = filter_input(INPUT_POST,'password', FILTER_DEFAULT);
       $userFirstName = filter_input(INPUT_POST, 'firstname', FILTER_DEFAULT);
       $userLastName = filter_input(INPUT_POST, 'lastname', FILTER_DEFAULT);
-      $this->createUser($userName, $userMail, $userPassword, $userFirstName, $userLastName);
+      $passwordHash = password_hash($userPassword, PASSWORD_ARGON2ID);
+      $this->createUser($userName, $userMail, $userPassword, $passwordHash, $userFirstName, $userLastName);
     }
 
-    private function createUser(string $userName, string $userMail, string $userPassword, string $userFirstName, string $userLastName)
+    private function createUser(string $userName, string $userMail, string $userPassword, string $passwordHash, string $userFirstName, string $userLastName)
     {
       $user = $this->findUser($userName, $userPassword);
       if(!$user){
-        $createQuery = "INSERT INTO users (user_username, user_email, user_password, user_status, user_firstname, user_lastname) VALUES (:username, :usermail, :userpassword, :userstatus, :firstname, :lastname)";
+        $createQuery = "INSERT INTO users (user_username, user_email, user_password, user_password_hash, user_status, user_firstname, user_lastname)
+        VALUES (:username, :usermail, :userpassword, :passwordhash, :userstatus, :firstname, :lastname)";
         $statement = $this->connection->prepare($createQuery);
         $statement->bindValue(':username', $userName);
         $statement->bindValue(':usermail', $userMail);
         $statement->bindValue(':userpassword', $userPassword);
+        $statement->bindValue(':passwordhash', $passwordHash);
         $statement->bindValue(':firstname', $userFirstName);
         $statement->bindValue(':lastname', $userLastName);
         $statement->bindValue(':userstatus', 1);
