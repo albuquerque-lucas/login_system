@@ -5,7 +5,6 @@ namespace LucasAlbuquerque\LoginSystem\View;
 use LucasAlbuquerque\LoginSystem\Handler\ClassHandlerInterface;
 use LucasAlbuquerque\LoginSystem\Traits\RenderHtmlTrait;
 use LucasAlbuquerque\LoginSystem\Infrastructure\DatabaseConnection;
-use LucasAlbuquerque\LoginSystem\Repository\TaskRepository;
 
 class TaskView implements ClassHandlerInterface
 {

@@ -22,16 +22,13 @@ class AuthController implements ClassHandlerInterface
     public function handle(): void
     {
 
-        switch($_SERVER['path_info']){
+        switch($_SERVER['PATH_INFO']){
             case '/authenticate':
                 $this->authenticate();
                 break;
             case '/logout':
                 $this->deleteSession($_POST['userid']);
                 break;
-            default:
-            header($this->redirectLogin);
-            break;
         }
     }
 
@@ -41,7 +38,6 @@ class AuthController implements ClassHandlerInterface
         $password = filter_input(INPUT_POST, 'password', FILTER_UNSAFE_RAW);
 
         if(!$this->checkLoginState()){
-
             $tempUserName = $_SESSION['tempUserName'];
             $tempUserPassword = $_SESSION['tempUserPassword'];
 
@@ -73,6 +69,8 @@ class AuthController implements ClassHandlerInterface
             echo 'Bem vindo, ' . $_SESSION['user_name'] . '! ' . 'Você já está logado!';
             header($this->redirectHome);
         }
+        var_dump($this->checkLoginState());
+        exit();
     }
 
     public function checkLoginState()
@@ -81,12 +79,11 @@ class AuthController implements ClassHandlerInterface
         session_start();
     }
 
-    if(isset($_COOKIE['user_id']) && isset($_COOKIE['sessions_token']) && isset($_COOKIE['sessions_serial'])){
-
-         $query = "SELECT * FROM sessions WHERE user_id = :userId AND sessions_token = :token AND sessions_serial = :serial;";
+    if(isset($_COOKIE['sessions_userid']) && isset($_COOKIE['sessions_token']) && isset($_COOKIE['sessions_serial'])){
+        $query = "SELECT * FROM sessions WHERE sessions_userid = :userId AND sessions_token = :token AND sessions_serial = :serial;";
         $statement = $this->connection->prepare($query);
 
-        $id = $_COOKIE['user_id'];
+        $id = $_COOKIE['sessions_userid'];
         $token = $_COOKIE['sessions_token'];
         $serial = $_COOKIE['sessions_serial'];
 
@@ -98,19 +95,23 @@ class AuthController implements ClassHandlerInterface
 
         $session = $statement->fetch(PDO::FETCH_ASSOC);
 
-        if($session['user_id'] > 0)
+        if($session['sessions_userid'] > 0)
         {
-            if($session['user_id'] == $_COOKIE['user_id'] && $session['sessions_token'] == $_COOKIE['sessions_token'] && $session['sessions_serial'] == $_COOKIE['sessions_serial']){
+            if($session['sessions_userid'] == $_COOKIE['sessions_userid'] && $session['sessions_token'] == $_COOKIE['sessions_token'] && $session['sessions_serial'] == $_COOKIE['sessions_serial']){
                 {
-                    if($session['user_id'] == $_SESSION['sessions_id'] && $session['sessions_token'] == $_SESSION['sessions_token'] && $session['sessions_serial'] == $_SESSION['sessions_serial']){
+                    if($session['sessions_userid'] == $_SESSION['sessions_id'] && $session['sessions_token'] == $_SESSION['sessions_token'] && $session['sessions_serial'] == $_SESSION['sessions_serial']){
                         return true;
                     } else{
-                        $this->createSession($_COOKIE['user_name'], $_COOKIE['user_id'], $_COOKIE['sessions_token'], $_COOKIE['sessions_serial']);
+                        $this->createSession($_COOKIE['user_name'], $_COOKIE['sessions_userid'], $_COOKIE['sessions_token'], $_COOKIE['sessions_serial']);
                         return true;
                     }
                 }
             }
+        } else {
+
         }
+    } else {
+
     }
     }
 
@@ -141,10 +142,10 @@ class AuthController implements ClassHandlerInterface
 
     private function createCoockie($userName, $userId, $token, $serial): void
     {
-            setcookie('user_id', $userId, time() + (86400) * 30, "/");
-            setcookie('user_name', $userName, time() + (86400) * 30, "/");
-            setcookie('token', $token, time() + (86400) * 30, "/");
-            setcookie('serial', $serial, time() + (86400) * 30, "/");
+            setcookie('sessions_userid', $userId, time() + (86400) * 30, "/");
+            setcookie('sessions_username', $userName, time() + (86400) * 30, "/");
+            setcookie('sessions_token', $token, time() + (86400) * 30, "/");
+            setcookie('sessions_serial', $serial, time() + (86400) * 30, "/");
     }
 
     private function createSession($userName, $userId, $token, $serial):void
@@ -152,33 +153,34 @@ class AuthController implements ClassHandlerInterface
         if(!isset($_SESSION)){
             session_start();
         }
-            $_SESSION['user_name'] = $userName;
-            $_SESSION['id'] = $userId;
-            $_SESSION['token'] = $token;
-            $_SESSION['serial'] = $serial;
+            $_SESSION['sessions_username'] = $userName;
+            $_SESSION['sessions_id'] = $userId;
+            $_SESSION['sessions_token'] = $token;
+            $_SESSION['sessions_serial'] = $serial;
     }
 
-    private function deleteCoockies(): void
+    private function deleteCookies(): void
     {
-        setcookie('user_id', '', time() - 1, "/");
-        setcookie('user_name', '', time() - 1, "/");
-        setcookie('token', '', time() - 1, "/");
-        setcookie('serial', '', - 1, "/");
+        setcookie('sessions_userid', '', time() - 1, "/");
+        setcookie('sessions_username', '', time() - 1, "/");
+        setcookie('sessions_token', '', time() - 1, "/");
+        setcookie('sessions_serial', '', - 1, "/");
         header($this->redirectHome);
     }
 
     public function deleteSession($userId):void
     {
-        $searchQuery = "SELECT * FROM sessions WHERE user_id = :user_id";
+        $searchQuery = "SELECT * FROM sessions WHERE sessions_userid = :user_id";
         $searchStatement = $this->connection->prepare($searchQuery);
         $searchStatement->bindValue(':user_id', $userId);
         $searchStatement->execute();
         $currentSession = $searchStatement->fetch(\PDO::FETCH_ASSOC);
 
-        $deleteQuery = "DELETE FROM sessions WHERE user_id = :user_id;";
+        $deleteQuery = "DELETE FROM sessions WHERE sessions_userid = :user_id;";
         $statement = $this->connection->prepare($deleteQuery);
-        $statement->bindValue(':user_id', $currentSession['user_id']);
+        $statement->bindValue(':user_id', $currentSession['sessions_userid']);
         $statement->execute();
+        $this->deleteCookies();
         session_destroy();
         header($this->redirectLogin);
     }
@@ -201,10 +203,10 @@ class AuthController implements ClassHandlerInterface
         $statement = $this->connection->prepare($sessionsQuery);
         $statement->execute();
         $result = $statement->fetch(PDO::FETCH_ASSOC);
+        $status = $this->checkLoginState();
         if(!$result){
-            $status = false;
+            return false;
         } else {
-            $status = true;
             $sessionsUserId = $result['sessions_userid'];
             $userNameQuery = "SELECT u.* FROM users u JOIN sessions s ON u.user_id = $sessionsUserId";
             $userNameStatement = $this->connection->prepare($userNameQuery);

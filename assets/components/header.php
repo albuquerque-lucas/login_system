@@ -2,6 +2,7 @@
 require './vendor/autoload.php';
 use LucasAlbuquerque\LoginSystem\Controller\AuthController;
 $authController = new AuthController();
+//$loginState = $authController->checkLoginState();
 $sessionInfo = $authController->checkSessionStatus();
 list($status, $user) = $sessionInfo;
 ?>
