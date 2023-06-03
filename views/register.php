@@ -8,6 +8,12 @@ include './assets/components/header.php'
                 <label for="username" class="form-label">User name</label>
                 <input type="text" class="form-control" id="username" name="username">
             </div>
+            <div class="mb-3 d-flex w-100">
+                <label for="firstname" class="form-label">Nome</label>
+                <input type="text" class="form-control" id="firstname" name="firstname">
+                <label for="lastname" class="form-label">Sobrenome</label>
+                <input type="text" class="form-control" id="lastname" name="lastname">
+            </div>
             <div class="mb-3">
                 <label for="email" class="form-label">Email address</label>
                 <input type="email" class="form-control" id="email" name="email" aria-describedby="emailHelp">

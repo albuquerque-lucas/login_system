@@ -41,7 +41,7 @@ class AuthController implements ClassHandlerInterface
             $tempUserName = $_SESSION['tempUserName'];
             $tempUserPassword = $_SESSION['tempUserPassword'];
 
-            $userCheckQuery = "SELECT user_name, user_password FROM users WHERE user_name = :username AND user_password = :password";
+            $userCheckQuery = "SELECT user_username, user_password FROM users WHERE user_username = :username AND user_password = :password";
             $statement = $this->connection->prepare($userCheckQuery);
             $statement->bindValue(':username', $tempUserName);
             $statement->bindValue(':password', $tempUserPassword);
@@ -55,7 +55,7 @@ class AuthController implements ClassHandlerInterface
                     $user = $this->findUser($tempUserName, $tempUserPassword);
                 };
                 if($user['user_id'] > 0){
-                    $this->createRecord($user['user_id'], $user['user_name']);
+                    $this->createRecord($user['user_id'], $user['user_username']);
                     header($this->redirectHome);
                 } else{
                     echo "Usuário ou senha inválidos!";
@@ -66,7 +66,7 @@ class AuthController implements ClassHandlerInterface
                 // header($this->redirectLogin);
             }
         } else{
-            echo 'Bem vindo, ' . $_SESSION['user_name'] . '! ' . 'Você já está logado!';
+            echo 'Bem vindo, ' . $_SESSION['user_username'] . '! ' . 'Você já está logado!';
             header($this->redirectHome);
         }
         var_dump($this->checkLoginState());
@@ -102,7 +102,7 @@ class AuthController implements ClassHandlerInterface
                     if($session['sessions_userid'] == $_SESSION['sessions_id'] && $session['sessions_token'] == $_SESSION['sessions_token'] && $session['sessions_serial'] == $_SESSION['sessions_serial']){
                         return true;
                     } else{
-                        $this->createSession($_COOKIE['user_name'], $_COOKIE['sessions_userid'], $_COOKIE['sessions_token'], $_COOKIE['sessions_serial']);
+                        $this->createSession($_COOKIE['user_username'], $_COOKIE['sessions_userid'], $_COOKIE['sessions_token'], $_COOKIE['sessions_serial']);
                         return true;
                     }
                 }
@@ -187,7 +187,7 @@ class AuthController implements ClassHandlerInterface
 
     private function findUser($userName, $password)
     {
-        $query = "SELECT * FROM users WHERE user_name = :username AND user_password = :password";
+        $query = "SELECT * FROM users WHERE user_username = :username AND user_password = :password";
 
         $statement = $this->connection->prepare($query);
         $statement->bindValue(':username', $userName);
