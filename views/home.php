@@ -20,13 +20,13 @@
     ?>
         <form class="form" action="/create" method="post">
             <div class="form-group">
-                <label for="name">Nome</label>
-                <input type="text" id="name" name="name" class="form-control" required autofocus/>
+                <label for="task_name">Nome</label>
+                <input type="text" id="task_name" name="task_name" class="form-control" required autofocus/>
             </div>
 
             <div class="form-group">
-                <label for="description">Descrição</label>
-                <input type="text" id="description" name="description" class="form-control" required/>
+                <label for="task_description">Descrição</label>
+                <input type="text" id="task_description" name="task_description" class="form-control" required/>
             </div>
 
             <button class="btn btn-primary mt-2" type="submit">Incluir</button>
