@@ -22,8 +22,8 @@ list($status, $user) = $sessionInfo;
 <body>
 
 <header>
-    <nav class="navbar-dark bg-dark">
-        <ul class="navbar-nav d-flex w-100">
+    <nav class="navbar navbar-dark bg-dark navbar-expand-lg d-flex flex-column">
+        <ul class="navbar-nav w-25 d-flex justify-content-between align-self-center">
             <li class="nav-item">
                 <a class="nav-link" href="/home">Home</a>
             </li>
@@ -38,8 +38,8 @@ list($status, $user) = $sessionInfo;
                 <li class="nav-item">
                     <a class="nav-link" href="/register">Sign in</a>
                 </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="/login">Login</a>
+                <li class="nav-item rounded">
+                    <a class="nav-link text-white" href="/login">Login</a>
                 </li>
             <?php } ?>
         </ul>

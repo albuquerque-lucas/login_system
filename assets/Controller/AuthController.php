@@ -3,6 +3,7 @@
 namespace LucasAlbuquerque\LoginSystem\Controller;
 
 use Exception;
+use LucasAlbuquerque\LoginSystem\Exceptions\AuthException;
 use LucasAlbuquerque\LoginSystem\Handler\ClassHandlerInterface;
 use LucasAlbuquerque\LoginSystem\Infrastructure\DatabaseConnection;
 use PDO;
@@ -38,47 +39,57 @@ class AuthController implements ClassHandlerInterface
         $userName = filter_input(INPUT_POST, 'username', FILTER_UNSAFE_RAW);
         $password = filter_input(INPUT_POST, 'password', FILTER_UNSAFE_RAW);
 
-        if(!$this->checkLoginState()){
-            $tempUserName = $_SESSION['tempUserName'];
-            $tempUserPassword = $_SESSION['tempUserPassword'];
-
-            $userCheckQuery = "SELECT user_username, user_password FROM users WHERE user_username = :username AND user_password = :password";
-            $statement = $this->connection->prepare($userCheckQuery);
-            $statement->bindValue(':username', $tempUserName);
-            $statement->bindValue(':password', $tempUserPassword);
-            $statement->execute();
-            $result = $statement->fetch(PDO::FETCH_ASSOC);
-
-            if(isset($userName) && isset($password) || $result) {
-                if($userName || $password) {
-                    $user = $this->findUser($userName, $password);
-                } else if ($result) {
-                    $user = $this->findUser($tempUserName, $tempUserPassword);
-                };
-                if($user['user_id'] > 0){
-                    $this->createRecord($user['user_id'], $user['user_username']);
+        try{
+            if(!$this->checkLoginState()){
+                $tempUserName = $_SESSION['tempUserName'];
+                $tempUserPassword = $_SESSION['tempUserPassword'];
+    
+                $userCheckQuery = "SELECT user_username, user_password FROM users WHERE user_username = :username AND user_password = :password";
+                $statement = $this->connection->prepare($userCheckQuery);
+                $statement->bindValue(':username', $tempUserName);
+                $statement->bindValue(':password', $tempUserPassword);
+                $statement->execute();
+                $result = $statement->fetch(PDO::FETCH_ASSOC);
+    
+                if(isset($userName) && isset($password) || $result) {
+                    if($userName || $password) {
+                        $user = $this->findUser($userName, $password);
+                    } else if ($result) {
+                        $user = $this->findUser($tempUserName, $tempUserPassword);
+                    };
+    
+                    if($user['user_id'] > 0){
+                        $this->createRecord($user['user_id'], $user['user_username']);
+                        $expTime = time() + 1;
+                        $message = "<h4>Seja bem vindo, {$user['user_firstname']} {$user['user_lastname']}!</h4>";
+                        setcookie('welcomeMessage', $message, $expTime);
+                        header($this->redirectHome);
+                    } else{
+                        $expTime = time() + 1;
+                        $message = "<span>Usuário ou senha inválidos.</span>";
+                        throw new AuthException('errorMessage', $message, $expTime, $this->redirectLogin);
+                    }
+                }else{
                     $expTime = time() + 1;
-                    $message = "<h4>Seja bem vindo, {$user['user_firstname']} {$user['user_lastname']}!</h4>";
-                    setcookie('welcomeMessage', $message, $expTime);
-                    header($this->redirectHome);
-                } else{
-                    $expTime = time() + 1;
-                    $message = "<span>Usuário ou senha inválidos.</span>";
-                    setcookie('errorMessage', $message, $expTime);
-                    header($this->redirectLogin);
+                    $message = "<span>Não foi possível verificar valores dos inputs.</span>";
+                    throw new AuthException('errorMessage', $message, $expTime, $this->redirectLogin);
                 }
-            }else{
+            } else{
                 $expTime = time() + 1;
-                $message = "<span>Não foi possível verificar valores dos inputs.</span>";
-                setcookie('errorMessage', $message, $expTime);
-                header($this->redirectLogin);
+                $message = '<p>Você já está logado!</p>';
+                setcookie('authMessage', $message, $expTime);
+                throw new AuthException('authMessage', $message, $expTime, $this->redirectHome);
             }
-        } else{
-            $expTime = time() + 1;
-            $message = '<p>Você já está logado!</p>';
-            setcookie('authMessage', $message, $expTime);
-            header($this->redirectHome);
+        } catch( AuthException $exception) {
+            $message = $exception->getMessage();
+            $messageType = $exception->getMessageType().
+            $expiration = $exception->getExpiration();
+            $redirect = $exception->getRedirect();
+            setcookie($messageType, $message, $expiration, $redirect);
+            header($redirect);
         }
+
+        
     }
 
     public function checkLoginState()
@@ -88,38 +99,45 @@ class AuthController implements ClassHandlerInterface
     }
 
     if(isset($_COOKIE['sessions_userid']) && isset($_COOKIE['sessions_token']) && isset($_COOKIE['sessions_serial'])){
-        $query = "SELECT * FROM sessions WHERE sessions_userid = :userId AND sessions_token = :token AND sessions_serial = :serial;";
-        $statement = $this->connection->prepare($query);
-
-        $id = $_COOKIE['sessions_userid'];
-        $token = $_COOKIE['sessions_token'];
-        $serial = $_COOKIE['sessions_serial'];
-
-        $statement->bindValue(':userId', $id, PDO::PARAM_INT);
-        $statement->bindValue(':token', $token, PDO::PARAM_INT);
-        $statement->bindValue(':serial', $serial, PDO::PARAM_INT);
-
-        $statement->execute();
-
-        $session = $statement->fetch(PDO::FETCH_ASSOC);
-
-        if($session['sessions_userid'] > 0)
-        {
-            if($session['sessions_userid'] == $_COOKIE['sessions_userid'] && $session['sessions_token'] == $_COOKIE['sessions_token'] && $session['sessions_serial'] == $_COOKIE['sessions_serial']){
-                {
-                    if($session['sessions_userid'] == $_SESSION['sessions_id'] && $session['sessions_token'] == $_SESSION['sessions_token'] && $session['sessions_serial'] == $_SESSION['sessions_serial']){
-                        return true;
-                    } else{
-                        $this->createSession($_COOKIE['user_username'], $_COOKIE['sessions_userid'], $_COOKIE['sessions_token'], $_COOKIE['sessions_serial']);
-                        return true;
-                    }
+        try {
+            $query = "SELECT * FROM sessions WHERE sessions_userid = :userId AND sessions_token = :token AND sessions_serial = :serial;";
+            $statement = $this->connection->prepare($query);
+    
+            $id = $_COOKIE['sessions_userid'];
+            $token = $_COOKIE['sessions_token'];
+            $serial = $_COOKIE['sessions_serial'];
+    
+            $statement->bindValue(':userId', $id, PDO::PARAM_INT);
+            $statement->bindValue(':token', $token, PDO::PARAM_INT);
+            $statement->bindValue(':serial', $serial, PDO::PARAM_INT);
+    
+            $statement->execute();
+    
+            $session = $statement->fetch(PDO::FETCH_ASSOC);
+    
+            if ($session['sessions_userid'] > 0) {
+                if($session['sessions_userid'] == $_COOKIE['sessions_userid']
+                && $session['sessions_token'] == $_COOKIE['sessions_token']
+                && $session['sessions_serial'] == $_COOKIE['sessions_serial']) {
+                        if($session['sessions_userid'] == $_SESSION['sessions_id']
+                        && $session['sessions_token'] == $_SESSION['sessions_token']
+                        && $session['sessions_serial'] == $_SESSION['sessions_serial']) {
+                            return true;
+                        } else{
+                            $this->createSession($_COOKIE['user_username'], $_COOKIE['sessions_userid'], $_COOKIE['sessions_token'], $_COOKIE['sessions_serial']);
+                            return true;
+                        }
+                } else {
+                    throw new Exception('Não foi identificada uma sessão válida. Os dados de sessão informados não correspondem aos dados salvos no seu navegador.');
                 }
+            } else {
+                throw new Exception('Sessão não encontrada.');
             }
-        } else {
-
+        } catch(Exception $exception) {
+            setcookie('errorMessage', $exception->getMessage(), time() + 3);
+            header($this->redirectLogin);
         }
-    } else {
-
+        
     }
     }
 
