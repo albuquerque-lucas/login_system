@@ -54,7 +54,8 @@ class UserController implements ClassHandlerInterface
       } else{
         session_start();
         $message = "<span>Nome de usuário indisponível.</span>";
-        $this->setUserMessage('errorMessage', $message, 15);
+        $expTime = time() + 1;
+        setcookie('errorMessage', $message, $expTime);
         header($this->redirectCreate);
       }
     }
@@ -74,11 +75,5 @@ class UserController implements ClassHandlerInterface
     {
         $filteredString = ucfirst(strtolower(trim($string)));
         return $filteredString;
-    }
-
-    public function setUserMessage($type, $message, $expTime)
-    {
-        $expiration = time() + $expTime;
-        setcookie($type, $message, $expiration);
     }
 }

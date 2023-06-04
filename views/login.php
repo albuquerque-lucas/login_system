@@ -23,12 +23,12 @@ include './assets/components/header.php';
                 <label for="password" class="form-label">Password</label>
                 <input type="password" class="form-control" id="password" name="password">
             </div>
-            <div class="mb-3 form-check">
-                <input type="checkbox" class="form-check-input" id="check" name="check">
-                <label class="form-check-label" for="check">Check me out</label>
+            <div class="d-flex justify-content-between">
+                <button type="submit" class="btn btn-dark">Entrar</button>
+                <button type='button' class="btn btn-dark">
+                    <a href="/register" class="text-white text-decoration-none">Register</a>
+                </button>
             </div>
-            <button type="submit" class="btn btn-primary">Submit</button>
-            <a href='/register'>Register</a>
         </form>
     </div>
 
