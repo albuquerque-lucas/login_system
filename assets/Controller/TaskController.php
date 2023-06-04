@@ -34,7 +34,7 @@ class TaskController implements ClassHandlerInterface
                 $this->taskView->handle();
                 break;
             case '/create':
-                $this->createTask($_POST['name'], $_POST['description'], '10/10/1010');
+                $this->createTask();
                 break;
             case '/delete':
                 $this->removeTask($_POST['id']);
@@ -47,23 +47,44 @@ class TaskController implements ClassHandlerInterface
 
     }
 
-    public function createTask(string $name, string $description):void
+    public function createTask():void
     {
-        $task = new Task(null, $name, $description);
-        $query = "INSERT into tasks(name, description, creationDate) VALUES (:name , :description, :creationDate)";
-        $dateTime = $this->getDateTime();
 
+        $taskName = filter_input(INPUT_POST, 'task_name', FILTER_DEFAULT);
+        $taskDescription = filter_input(INPUT_POST, 'task_description', FILTER_DEFAULT);
+        $taskInitialStatus = 0;
+        $taskCreationDate = $this->getDateTime();
+        $taskStatusName = 'Criado';
+        $initialConclusionDate = '---';
+        $initialInitDate = '---';
+
+        $task = new Task(
+        0,
+        $taskName,
+        $taskDescription,
+        $taskInitialStatus,
+        $taskStatusName,
+        $taskCreationDate
+        );
+        $task->setConclusionDate($initialConclusionDate);
+        $task->setInitDate($initialInitDate);
+        $query = "INSERT into tasks(task_name, task_description, task_status, task_status_name, task_creation_date, task_init_date, task_conclusion_date)
+        VALUES (:task_name , :task_description, :statusCode, :statusName, :creationDate, :initDate, :conclusionDate)";
         $statement = $this->connection->prepare($query);
-        $statement->bindValue(':name', $task->name());
-        $statement->bindValue(':description', $task->description());
-        $statement->bindValue(':creationDate', $dateTime);
+        $statement->bindValue(':task_name', $task->getName());
+        $statement->bindValue(':task_description', $task->getDescription());
+        $statement->bindValue(':statusCode', $task->getStatus());
+        $statement->bindValue('statusName', $task->getStatusName());
+        $statement->bindValue(':creationDate', $task->getCreationDate());
+        $statement->bindValue(':initDate', $task->getInitDate());
+        $statement->bindValue(':conclusionDate', $task->getConclusionDate());
         $statement->execute();
         header($this->redirect);
     }
 
     public function removeTask(int $id):void
     {
-        $statement = $this->connection->prepare('DELETE FROM tasks WHERE id = :id');
+        $statement = $this->connection->prepare('DELETE FROM tasks WHERE task_id = :id');
         $statement->bindValue(':id', $id, PDO::PARAM_INT);
         $statement->execute();
         header($this->redirect);
@@ -74,7 +95,7 @@ class TaskController implements ClassHandlerInterface
     {
         $now = new DateTime('now');
         $now->setTimezone(new DateTimeZone('America/Sao_Paulo'));
-        $dateTime = $now->format('d/m/Y');
+        $dateTime = $now->format('Y-m-d H:i:s');
         return $dateTime;
     }
 

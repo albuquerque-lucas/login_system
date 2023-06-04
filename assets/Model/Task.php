@@ -4,47 +4,106 @@ namespace LucasAlbuquerque\LoginSystem\Model;
 
 class Task
 {
-
     private ?int $id;
     private string $name;
     private string $description;
+    private int $task_status;
+    private string $task_staus_name;
+    private string $task_creation_date;
+    private string $task_init_date;
+    private string $task_conclusion_date;
 
-    public function __construct(?int $id, string $name, string $description)
+    public function __construct(
+    ?int $id,
+    string $name,
+    string $description,
+    int $task_status,
+    string $task_status_name,
+    string $task_creation_date
+    )
     {
         $this->id = $id;
         $this->name = $name;
         $this->description = $description;
+        $this->task_status = $task_status;
+        $this->task_staus_name = $task_status_name;
+        $this->task_creation_date = $task_creation_date;
     }
 
-    public function id(): int
+    public function getId(): int
     {
         return $this->id;
     }
 
-
-    public function name(): string
+    public function getName(): string
     {
         return $this->name;
     }
 
-
-    public function setName(string $name): void
-    {
-        $this->name = $name;
-    }
-
-
-    public function description(): string
+    public function getDescription(): string
     {
         return $this->description;
     }
 
-
-    public function setDescription(string $description): void
+    public function getStatus(): int
     {
-        $this->description = $description;
+        return $this->task_status;
     }
 
+    public function getStatusName(): string
+    {
+        return $this->task_staus_name;
+    }
+
+    public function getCreationDate(): string
+    {
+        return $this->task_creation_date;
+    }
+
+    public function getInitDate(): string
+    {
+        return $this->task_init_date;
+    }
+
+    public function getConclusionDate(): string
+    {
+        return $this->task_conclusion_date;
+    }
+
+    public function setName(string $newName): void
+    {
+        $this->name = $newName;
+    }
+
+    public function setDescription(string $newDescription): void
+    {
+        $this->description = $newDescription;
+    }
+
+    public function setStatus(int $newStatus): void
+    {
+        $this->task_status = $newStatus;
+    }
+
+    public function setStatusName(string $newStatusName): void
+    {
+        $this->task_staus_name = $newStatusName;
+    }
+
+    public function setCreationDate(string $newCreationDate): void
+    {
+        $this->task_creation_date = $newCreationDate;
+    }
+
+    public function setInitDate(string $new_init_date): void
+    {
+        $this->task_init_date = $new_init_date;
+    }
+
+    public function setConclusionDate(string $newConclusionDate): void
+    {
+        $this->task_conclusion_date = $newConclusionDate;
+    }
 
 
 }
