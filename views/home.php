@@ -62,52 +62,25 @@
                         <?= $task['task_description']?>
                     </td>
                     <td class='text-center'>
-                        <?= $task['task_creationDate']?>
+                        <?= $task['task_creation_date']?>
                     </td>
                     <td class='text-center'>
-                        <?php if( $task['task_conclusionDate'] == null){?>
-                            Pendente
-                        <?php } else{ ?>
-                            <?= $task['task_conclusionDate'] ?>
-                        <?php } ?>
+                        <?= $task['task_conclusion_date'] ?>
                     </td>
-                    <td class='text-center <?php if($task['task_status'] == 0){?>bg-warning<?php } else{?>bg-success text-light<?php }?>'>
-                        <?php if($task['task_status'] == 0){ ?>
-                            Pendente
-                        <?php } else{ ?>
-                            Concluída
-                        <?php } ?>
-                    </td>
-
-                    <?php if ($check){ ?>
                     <td class='text-center'>
-                        <form action="/concludeTask" method="post">
-                            <input type="hidden" name="id" value=<?= $task['task_id']?>>
-                            <input
-                                    type="checkbox"
-                                    name="status"
-                                <?php if($task['task_status'] == 0){ ?>
-                                    value="null"
-                                <?php }
-                                else{ ?>
-                                    value="1"
-                                <?php } ?>
-                                <?php if($task['task_status'] ==! 0){?>
-                                    checked
-                                <?php } ?>
-                            >
-                            <button type="submit" class="btn btn-sm btn-dark"><i class="fa-solid fa-check"></i></button>
+                        <?= $task['task_status_name'] ?>
+                    </td>
+                    <td>
+                        <?= $task['task_status_name'] ?>
+                    </td>
+                    <td class='centralized'>
+                        <form action="/delete" method="post">
+                            <input type="hidden" name="id" value="<?= $task['task_id']?>" class="d-none">
+                            <button type="submit" class='btn btn-sm btn-danger' disabled=<?php $task['task_status'] !== 2?>>
+                                <i class="fa-solid fa-trash"></i>
+                            </button>
                         </form>
                     </td>
-                    <?php }?>
-                    <?php if ($check){ ?>
-                        <td class='centralized'>
-                            <form action="/delete" method="post">
-                                <input type="hidden" name="id" value="<?= $task['id']?>" class="d-none">
-                                <button type="submit" class='btn btn-sm btn-danger'><i class="fa-solid fa-trash"></i></button>
-                            </form>
-                        </td>
-                    <?php }?>
                 </tr>
                 <?php }?>
                 </tbody>
