@@ -8,29 +8,27 @@
         <?php 
             if (isset($_COOKIE['authMessage']) || isset($_COOKIE['welcomeMessage'])) {
         ?>
-    <div class='alert alert-success'>
-        <?php echo $_COOKIE['welcomeMessage'];?>
-        <?php echo $_COOKIE['authMessage'];?>
-    </div>
-<?php } ?>
+        <div class='alert alert-success'>
+            <?php echo $_COOKIE['welcomeMessage'];?>
+            <?php echo $_COOKIE['authMessage'];?>
+        </div>
+        <?php } ?>
     </div>
 
     <?php 
         if ($status) {
     ?>
-        <form class="form" action="/create" method="post">
-            <div class="form-group">
-                <label for="task_name">Nome</label>
-                <input type="text" id="task_name" name="task_name" class="form-control" required autofocus/>
-            </div>
-
-            <div class="form-group">
-                <label for="task_description">Descrição</label>
-                <input type="text" id="task_description" name="task_description" class="form-control" required/>
-            </div>
-
+    <form class="form" action="/create" method="post">
+        <div class="form-group">
+            <label for="task_name">Nome</label>
+            <input type="text" id="task_name" name="task_name" class="form-control" required autofocus/>
+        </div>
+        <div class="form-group">
+            <label for="task_description">Descrição</label>
+            <input type="text" id="task_description" name="task_description" class="form-control" required/>
+        </div>
             <button class="btn btn-primary mt-2" type="submit">Incluir</button>
-        </form>
+    </form>
     <?php } ?>
     <br>
     <br>
@@ -38,55 +36,46 @@
         <div class="card">
             <table class="table table-hover table-bordered task-table">
                 <thead>
-                <tr>
-                    <th>NOME</th>
-                    <th>DESCRIÇÃO</th>
-                    <th>CRIAÇÃO</th>
-                    <th>CONCLUSÃO</th>
-                    <th>STATUS</th>
-                    <?php if ($status){?>
-                    <th>CONCLUIR</th>
-                    <th>EXCLUIR</th>
-                    <?php }?>
-                </tr>
+                    <tr>
+                        <th class="text-center">NOME</th>
+                        <th class="text-center">DESCRIÇÃO</th>
+                        <th class="text-center">CRIAÇÃO</th>
+                        <th class="text-center">CONCLUSÃO</th>
+                        <th class="text-center">STATUS</th>
+                        <?php if ($status) { ?>
+                            <th class="text-center">CONCLUIR</th>
+                            <th class="text-center">EXCLUIR</th>
+                        <?php } ?>
+                    </tr>
                 </thead>
                 <tbody>
-                <?php
-                foreach ($tasks as $task) {
-                ?>
-                <tr>
-                    <td class='text-center'>
-                        <?= $task['task_name']?>
-                    </td>
-                    <td>
-                        <?= $task['task_description']?>
-                    </td>
-                    <td class='text-center'>
-                        <?= $task['task_creation_date']?>
-                    </td>
-                    <td class='text-center'>
-                        <?= $task['task_conclusion_date'] ?>
-                    </td>
-                    <td class='text-center'>
-                        <?= $task['task_status_name'] ?>
-                    </td>
-                    <?php
-                    if ($status) {
-                    ?>
-                    <td>
-                        <?= $task['task_status_name'] ?>
-                    </td>
-                    <td class='centralized'>
-                        <form action="/delete" method="post">
-                            <input type="hidden" name="id" value="<?= $task['task_id']?>" class="d-none">
-                            <button type="submit" class='btn btn-sm btn-danger'>
-                                <i class="fa-solid fa-trash"></i>
-                            </button>
-                        </form>
-                    </td>
+                    <?php foreach ($tasks as $task) { ?>
+                        <tr>
+                            <td class="text-center"><?= $task['task_name'] ?></td>
+                            <td><?= $task['task_description'] ?></td>
+                            <td class="text-center"><?= $task['task_creation_date'] ?></td>
+                            <td class="text-center"><?= $task['task_conclusion_date'] ?></td>
+                            <td class="text-center"><?= $task['task_status_name'] ?></td>
+                        <?php if ($status) { ?>
+                            <td class="align-middle text-center">
+                                <form action="/task-update" method="post">
+                                    <input type="hidden" name="task-update" value="<?= $task['task_id'] ?>" class="d-none">
+                                    <button type="submit" name="task-update" class="btn btn-sm btn-primary">
+                                        <i class="fa fa-check"></i>
+                                    </button>
+                                </form>
+                            </td>
+                            <td class="align-middle text-center">
+                                <form action="/delete" method="post">
+                                    <input type="hidden" name="id" value="<?= $task['task_id'] ?>" class="d-none">
+                                    <button type="submit" class="btn btn-sm btn-danger">
+                                        <i class="fa fa-trash"></i>
+                                    </button>
+                                </form>
+                            </td>
+                        <?php } ?>
+                        </tr>
                     <?php } ?>
-                </tr>
-                <?php }?>
                 </tbody>
             </table>
         </div>
