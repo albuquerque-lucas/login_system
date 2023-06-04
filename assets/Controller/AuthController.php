@@ -58,21 +58,21 @@ class AuthController implements ClassHandlerInterface
                 if($user['user_id'] > 0){
                     $this->createRecord($user['user_id'], $user['user_username']);
                     $message = "<h4>Seja bem vindo, {$user['user_firstname']} {$user['user_lastname']}!</h4>";
-                    $this->setUserMessage('welcomeMessage', $message, 180);
+                    $this->setUserMessage('welcomeMessage', $message);
                     header($this->redirectHome);
                 } else{
                     $message = "<span>Usuário ou senha inválidos.</span>";
-                    $this->setUserMessage('errorMessage', $message, 15);
+                    $this->setUserMessage('errorMessage', $message);
                     header($this->redirectLogin);
                 }
             }else{
                 $message = "<span>Não foi possível verificar valores dos inputs.</span>";
-                $this->setUserMessage('errorMessage', $message, 15);
+                $this->setUserMessage('errorMessage', $message);
                 header($this->redirectLogin);
             }
         } else{
             $message = '<p>Você já está logado!</p>';
-            $this->setUserMessage('authMessage', $message, 15);
+            $this->setUserMessage('authMessage', $message);
             header($this->redirectHome);
         }
     }
@@ -231,7 +231,7 @@ class AuthController implements ClassHandlerInterface
         return [$status, $user];
     }
 
-    public function setUserMessage($type, $message, $expTime)
+    public function setUserMessage($type, $message, $expTime = 0)
     {
         $expiration = time() + $expTime;
         setcookie($type, $message, $expiration);
