@@ -57,22 +57,26 @@ class AuthController implements ClassHandlerInterface
                 };
                 if($user['user_id'] > 0){
                     $this->createRecord($user['user_id'], $user['user_username']);
+                    $expTime = time() + 1;
                     $message = "<h4>Seja bem vindo, {$user['user_firstname']} {$user['user_lastname']}!</h4>";
-                    setcookie('welcomeMessage', $message);
+                    setcookie('welcomeMessage', $message, $expTime);
                     header($this->redirectHome);
                 } else{
+                    $expTime = time() + 1;
                     $message = "<span>Usuário ou senha inválidos.</span>";
-                    setcookie('errorMessage', $message);
+                    setcookie('errorMessage', $message, $expTime);
                     header($this->redirectLogin);
                 }
             }else{
+                $expTime = time() + 1;
                 $message = "<span>Não foi possível verificar valores dos inputs.</span>";
-                setcookie('errorMessage', $message);
+                setcookie('errorMessage', $message, $expTime);
                 header($this->redirectLogin);
             }
         } else{
+            $expTime = time() + 1;
             $message = '<p>Você já está logado!</p>';
-            setcookie('authMessage', $message);
+            setcookie('authMessage', $message, $expTime);
             header($this->redirectHome);
         }
     }
