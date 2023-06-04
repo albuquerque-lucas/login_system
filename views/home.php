@@ -79,7 +79,7 @@
                     <td class='centralized'>
                         <form action="/delete" method="post">
                             <input type="hidden" name="id" value="<?= $task['task_id']?>" class="d-none">
-                            <button type="submit" class='btn btn-sm btn-danger' disabled=<?php $task['task_status'] !== 2?>>
+                            <button type="submit" class='btn btn-sm btn-danger'>
                                 <i class="fa-solid fa-trash"></i>
                             </button>
                         </form>

@@ -81,7 +81,7 @@ class TaskController implements ClassHandlerInterface
 
     public function removeTask(int $id):void
     {
-        $statement = $this->connection->prepare('DELETE FROM tasks WHERE id = :id');
+        $statement = $this->connection->prepare('DELETE FROM tasks WHERE task_id = :id');
         $statement->bindValue(':id', $id, PDO::PARAM_INT);
         $statement->execute();
         header($this->redirect);
