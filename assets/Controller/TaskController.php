@@ -39,8 +39,8 @@ class TaskController implements ClassHandlerInterface
             case '/delete':
                 $this->removeTask($_POST['id']);
                 break;
-            case '/concludeTask':
-                $this->setTaskStatus($_POST['id'], $_POST['status']);
+            case '/update-task':
+                $this->setTaskStatus($_POST['taskId'], $_POST['status']);
                 break;
         }
 
@@ -101,32 +101,48 @@ class TaskController implements ClassHandlerInterface
 
     private function setTaskStatus(int $id, $statusCode): void
     {
+        var_dump($id);
+        var_dump($statusCode);
+        exit();
+        // $query = "UPDATE tasks SET task_status = :status, task_status_name = :statusName WHERE id = :id";
+        // $statement = $this->connection->prepare($query);
+        // $statement->bindValue(':id', $id);
 
-
-            $query = "UPDATE tasks SET status = :status WHERE tasks.id = :id";
-            $statement = $this->connection->prepare($query);
-            $statement->bindValue(':id', $id);
-
-            if($statusCode ==! null){
-                $statement->bindValue(':status', 1);
-                $conclusionDate = $this->getDateTime();
-                $conclusionQuery = "UPDATE tasks set conclusionDate = :conclusionDate WHERE tasks.id = :id";
-                $conclusionStmt = $this->connection->prepare($conclusionQuery);
-                $conclusionStmt->bindValue(':conclusionDate', $conclusionDate);
-                $conclusionStmt->bindValue(':id', $id);
-                $conclusionStmt->execute();
-            } else{
-                $statement->bindValue(':status', 0);
-                $conclusionQuery = "UPDATE tasks set conclusionDate = :conclusionDate WHERE tasks.id = :id";
-                $conclusionStmt = $this->connection->prepare($conclusionQuery);
-                $conclusionStmt->bindValue(':conclusionDate', null);
-                $conclusionStmt->bindValue(':id', $id);
-                $conclusionStmt->execute();
-            }
-
-            $statement->execute();
-            header($this->redirect);
-
-
+        // switch($statusCode) {
+        //     case 0:
+        //         $dateTime = $this->getDateTime();
+        //         $newStatusName = 'Iniciada / Pendente';
+        //         $statement->bindValue(':status', 1);
+        //         $initQuery = "UPDATE tasks SET task_init_date = :initDate, task_status_name = :newStatusName WHERE id = :id";
+        //         $initStatement = $this->connection->prepare($initQuery);
+        //         $initStatement->bindValue(':initDate', $dateTime);
+        //         $initStatement->bindValue(':newStatusName', $newStatusName);
+        //         $statement->execute();
+        //         $initStatement->execute();
+        //     break;
+        //     case 1:
+        //         $dateTime = $this->getDateTime();
+        //         $newStatusName = 'Finalizada';
+        //         $statement->bindValue(':status', 2);
+        //         $finishQuery = "UPDATE tasks SET task_conclusion_date = :conclusionDate, task_status_name = :newStatusName WHERE id = :id";
+        //         $finishStatement = $this->connection->prepare($finishQuery);
+        //         $finishStatement->bindValue(':conclusionDate', $dateTime);
+        //         $finishStatement->bindValue(':newStatusName', $newStatusName);
+        //         $statement->execute();
+        //         $finishStatement->execute();
+        //     break;
+        //     case 2:
+        //         $dateTime = '---';
+        //         $newStatusName = 'Iniciada / Pendente';
+        //         $statement->bindValue(':status', 1);
+        //         $unfinishQuery = "UPDATE tasks SET task_conclusion_date = :conclusionDate, task_status_name = :newStatusName WHERE id = :id";
+        //         $unfinishStatement = $this->connection->prepare($unfinishQuery);
+        //         $unfinishStatement->bindValue(':conclusionDate', $dateTime);
+        //         $unfinishStatement->bindValue(':newStatusName', $newStatusName);
+        //         $statement->execute();
+        //         $unfinishStatement->execute();
+        //     break;
+        // }
+        // header($this->redirect);
     }
 }

@@ -61,15 +61,23 @@
                         <?php if ($status) { ?>
                             <td class="align-middle text-center">
                                 <?php if ($task['task_status'] === 0) {?>
-                                <button type="button" class="btn btn-sm btn-primary rounded">Iniciar</button>
+                                <button
+                                    id="init-btn"
+                                    type="button"
+                                    class="btn btn-sm btn-primary rounded"
+                                    data-status="<?php echo $task['task_status']?>"
+                                    data-id="<?php echo $task['task_id']?>"
+                                    >
+                                    Iniciar
+                                </button>
                                 <?php } else { ?>
                                 <label for="input-status">Concluir :</label>
-                                <input type="checkbox" checked=<?php $task['task_status'] === 2?>>
+                                <input type="checkbox" checked=<?php echo $task['task_status'] === 2; ?>>
                                 <?php } ?>
                             </td>
                             <td class="align-middle text-center">
                                 <form action="/delete" method="post">
-                                    <input type="hidden" name="id" value="<?= $task['task_id'] ?>" class="d-none">
+                                    <input type="hidden" name="id" value="<?php echo $task['task_id'] ?>" class="d-none">
                                     <button type="submit" class="btn btn-sm btn-danger">
                                         <i class="fa fa-trash"></i>
                                     </button>
@@ -83,7 +91,6 @@
         </div>
     </div>
 </div>
-
 
 <?php
 include './assets/components/footer.php';
