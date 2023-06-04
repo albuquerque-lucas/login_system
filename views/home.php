@@ -40,6 +40,7 @@
                         <th class="text-center">NOME</th>
                         <th class="text-center">DESCRIÇÃO</th>
                         <th class="text-center">CRIAÇÃO</th>
+                        <th class="text-center">INÍCIO</th>
                         <th class="text-center">CONCLUSÃO</th>
                         <th class="text-center">STATUS</th>
                         <?php if ($status) { ?>
@@ -54,16 +55,17 @@
                             <td class="text-center"><?= $task['task_name'] ?></td>
                             <td><?= $task['task_description'] ?></td>
                             <td class="text-center"><?= $task['task_creation_date'] ?></td>
+                            <td class="text-center"><?= $task['task_init_date'] ?></td>
                             <td class="text-center"><?= $task['task_conclusion_date'] ?></td>
                             <td class="text-center"><?= $task['task_status_name'] ?></td>
                         <?php if ($status) { ?>
                             <td class="align-middle text-center">
-                                <form action="/task-update" method="post">
-                                    <input type="hidden" name="task-update" value="<?= $task['task_id'] ?>" class="d-none">
-                                    <button type="submit" name="task-update" class="btn btn-sm btn-primary">
-                                        <i class="fa fa-check"></i>
-                                    </button>
-                                </form>
+                                <?php if ($task['task_status'] === 0) {?>
+                                <button type="button" class="btn btn-sm btn-primary rounded">Iniciar</button>
+                                <?php } else { ?>
+                                <label for="input-status">Concluir :</label>
+                                <input type="checkbox" checked=<?php $task['task_status'] === 2?>>
+                                <?php } ?>
                             </td>
                             <td class="align-middle text-center">
                                 <form action="/delete" method="post">

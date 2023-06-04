@@ -10,6 +10,7 @@ class Task
     private int $task_status;
     private string $task_staus_name;
     private string $task_creation_date;
+    private string $task_init_date;
     private string $task_conclusion_date;
 
     public function __construct(
@@ -59,39 +60,49 @@ class Task
         return $this->task_creation_date;
     }
 
+    public function getInitDate(): string
+    {
+        return $this->task_init_date;
+    }
+
     public function getConclusionDate(): string
     {
         return $this->task_conclusion_date;
     }
 
-    public function setName(string $name): void
+    public function setName(string $newName): void
     {
-        $this->name = $name;
+        $this->name = $newName;
     }
 
-    public function setDescription(string $description): void
+    public function setDescription(string $newDescription): void
     {
-        $this->description = $description;
+        $this->description = $newDescription;
     }
 
-    public function setStatus(int $status): void
+    public function setStatus(int $newStatus): void
     {
-        $this->task_status = $status;
+        $this->task_status = $newStatus;
     }
 
-    public function setStatusName(string $statusName): void
+    public function setStatusName(string $newStatusName): void
     {
-        $this->task_staus_name = $statusName;
+        $this->task_staus_name = $newStatusName;
     }
 
-    public function setCreationDate(string $creationDate): void
+    public function setCreationDate(string $newCreationDate): void
     {
-        $this->task_creation_date = $creationDate;
+        $this->task_creation_date = $newCreationDate;
     }
 
-    public function setConclusionDate(string $conclusionDate): void
+    public function setInitDate(string $new_init_date): void
     {
-        $this->task_conclusion_date = $conclusionDate;
+        $this->task_init_date = $new_init_date;
+    }
+
+    public function setConclusionDate(string $newConclusionDate): void
+    {
+        $this->task_conclusion_date = $newConclusionDate;
     }
 
 

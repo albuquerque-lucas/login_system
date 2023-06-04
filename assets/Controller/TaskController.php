@@ -56,6 +56,7 @@ class TaskController implements ClassHandlerInterface
         $taskCreationDate = $this->getDateTime();
         $taskStatusName = 'Criado';
         $initialConclusionDate = '---';
+        $initialInitDate = '---';
 
         $task = new Task(
         0,
@@ -66,14 +67,16 @@ class TaskController implements ClassHandlerInterface
         $taskCreationDate
         );
         $task->setConclusionDate($initialConclusionDate);
-        $query = "INSERT into tasks(task_name, task_description, task_status, task_status_name, task_creation_date, task_conclusion_date)
-        VALUES (:task_name , :task_description, :statusCode, :statusName, :creationDate, :conclusionDate)";
+        $task->setInitDate($initialInitDate);
+        $query = "INSERT into tasks(task_name, task_description, task_status, task_status_name, task_creation_date, task_init_date, task_conclusion_date)
+        VALUES (:task_name , :task_description, :statusCode, :statusName, :creationDate, :initDate, :conclusionDate)";
         $statement = $this->connection->prepare($query);
         $statement->bindValue(':task_name', $task->getName());
         $statement->bindValue(':task_description', $task->getDescription());
         $statement->bindValue(':statusCode', $task->getStatus());
         $statement->bindValue('statusName', $task->getStatusName());
         $statement->bindValue(':creationDate', $task->getCreationDate());
+        $statement->bindValue(':initDate', $task->getInitDate());
         $statement->bindValue(':conclusionDate', $task->getConclusionDate());
         $statement->execute();
         header($this->redirect);
