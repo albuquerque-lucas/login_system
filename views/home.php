@@ -6,10 +6,13 @@
     <h1 class="text-center">Tarefas</h1>
     <div id="mensagemView">
         <?php 
-            if ($status) {
+            if (isset($_COOKIE['authMessage']) || isset($_COOKIE['welcomeMessage'])) {
         ?>
-            <h3>Seja bem vindo, <?php echo $user['user_firstname'].' '.$user['user_lastname']?>!</h3>
-        <?php } ?>
+    <div class='alert alert-success'>
+        <?php echo $_COOKIE['welcomeMessage'];?>
+        <?php echo $_COOKIE['authMessage'];?>
+    </div>
+<?php } ?>
     </div>
 
     <?php 
