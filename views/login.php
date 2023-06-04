@@ -4,7 +4,15 @@ include './assets/components/header.php';
 
 ?>
 
-
+<?php
+    if (isset($_COOKIE['errorMessage'])) {
+        $message = $_COOKIE['errorMessage'];
+    
+    ?>
+        <div class="alert alert-danger text-center m-3 mx-auto w-50" role="alert">
+            <strong>Erro: </strong><?php echo $message; ?>
+        </div>
+    <?php } ?>
     <div class="container d-flex flex-column align-items-center mt-5">
         <form method="post" action="/authenticate">
             <div class="mb-3">

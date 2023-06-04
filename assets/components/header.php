@@ -17,7 +17,7 @@ list($status, $user) = $sessionInfo;
         integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
         <link rel="stylesheet" href="assets/styles/style.css">
         <script src="https://kit.fontawesome.com/9aa910470c.js" crossorigin="anonymous"></script>
-    <title>Login</title>
+    <title>Login System</title>
 </head>
 
 <body>

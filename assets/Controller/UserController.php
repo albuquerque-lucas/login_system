@@ -10,10 +10,12 @@ class UserController implements ClassHandlerInterface
 {
   private \PDO $connection;
   private string $redirectAuth;
+  private string $redirectCreate;
   public function __construct()
     {
       $this->connection = DatabaseConnection::connect();
       $this->redirectAuth = 'Location: /authenticate';
+      $this->redirectCreate = 'Location: /register';
     }
 
     public function handle(): void
@@ -50,18 +52,19 @@ class UserController implements ClassHandlerInterface
         $_SESSION['tempUserPassword'] = $userPassword;
         header($this->redirectAuth);
       } else{
-        echo "<h1>Usuário já existente.</h1>";
-        exit();
+        session_start();
+        $message = "<span>Nome de usuário indisponível.</span>";
+        $this->setUserMessage('errorMessage', $message, 15);
+        header($this->redirectCreate);
       }
     }
 
-    public function findUser($userName, $password)
+    public function findUser($userName)
     {
-      $query = "SELECT * FROM users WHERE user_username = :username AND user_password = :password";
+      $query = "SELECT * FROM users WHERE user_username = :username";
 
       $statement = $this->connection->prepare($query);
       $statement->bindValue(':username', $userName);
-      $statement->bindValue(':password', $password);
       $statement->execute();
 
       return $statement->fetch(PDO::FETCH_ASSOC);
@@ -71,5 +74,11 @@ class UserController implements ClassHandlerInterface
     {
         $filteredString = ucfirst(strtolower(trim($string)));
         return $filteredString;
+    }
+
+    public function setUserMessage($type, $message, $expTime)
+    {
+        $expiration = time() + $expTime;
+        setcookie($type, $message, $expiration);
     }
 }
