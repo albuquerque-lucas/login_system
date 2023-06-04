@@ -27,7 +27,6 @@ class Task
         $this->task_status = $task_status;
         $this->task_staus_name = $task_status_name;
         $this->task_creation_date = $task_creation_date;
-        $this->task_conclusion_date = '---';
     }
 
     public function getId(): int

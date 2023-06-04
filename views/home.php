@@ -70,6 +70,9 @@
                     <td class='text-center'>
                         <?= $task['task_status_name'] ?>
                     </td>
+                    <?php
+                    if ($status) {
+                    ?>
                     <td>
                         <?= $task['task_status_name'] ?>
                     </td>
@@ -81,6 +84,7 @@
                             </button>
                         </form>
                     </td>
+                    <?php } ?>
                 </tr>
                 <?php }?>
                 </tbody>
