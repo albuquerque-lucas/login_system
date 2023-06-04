@@ -44,7 +44,7 @@
                     <th>CRIAÇÃO</th>
                     <th>CONCLUSÃO</th>
                     <th>STATUS</th>
-                    <?php if ($check){?>
+                    <?php if ($status){?>
                     <th>CONCLUIR</th>
                     <th>EXCLUIR</th>
                     <?php }?>
@@ -56,23 +56,23 @@
                 ?>
                 <tr>
                     <td class='text-center'>
-                        <?= $task['name']?>
+                        <?= $task['task_name']?>
                     </td>
                     <td>
-                        <?= $task['description']?>
+                        <?= $task['task_description']?>
                     </td>
                     <td class='text-center'>
-                        <?= $task['creationDate']?>
+                        <?= $task['task_creationDate']?>
                     </td>
                     <td class='text-center'>
-                        <?php if( $task['conclusionDate'] == null){?>
+                        <?php if( $task['task_conclusionDate'] == null){?>
                             Pendente
                         <?php } else{ ?>
-                            <?= $task['conclusionDate'] ?>
+                            <?= $task['task_conclusionDate'] ?>
                         <?php } ?>
                     </td>
-                    <td class='text-center <?php if($task['status'] == 0){?>bg-warning<?php } else{?>bg-success text-light<?php }?>'>
-                        <?php if($task['status'] == 0){ ?>
+                    <td class='text-center <?php if($task['task_status'] == 0){?>bg-warning<?php } else{?>bg-success text-light<?php }?>'>
+                        <?php if($task['task_status'] == 0){ ?>
                             Pendente
                         <?php } else{ ?>
                             Concluída
@@ -82,17 +82,17 @@
                     <?php if ($check){ ?>
                     <td class='text-center'>
                         <form action="/concludeTask" method="post">
-                            <input type="hidden" name="id" value=<?= $task['id']?>>
+                            <input type="hidden" name="id" value=<?= $task['task_id']?>>
                             <input
                                     type="checkbox"
                                     name="status"
-                                <?php if($task['status'] == 0){ ?>
+                                <?php if($task['task_status'] == 0){ ?>
                                     value="null"
                                 <?php }
                                 else{ ?>
                                     value="1"
                                 <?php } ?>
-                                <?php if($task['status'] ==! 0){?>
+                                <?php if($task['task_status'] ==! 0){?>
                                     checked
                                 <?php } ?>
                             >
