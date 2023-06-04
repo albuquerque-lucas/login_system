@@ -40,7 +40,12 @@ class TaskController implements ClassHandlerInterface
                 $this->removeTask($_POST['id']);
                 break;
             case '/update-task':
-                $this->setTaskStatus($_POST['taskId'], $_POST['status']);
+                $data = json_decode(file_get_contents('php://input'), true);
+                if ($data !== null) {
+                    $taskId = $data['taskId'];
+                    $status = $data['status'];
+                }
+                $this->setTaskStatus($taskId, $status);
                 break;
         }
 
@@ -103,46 +108,51 @@ class TaskController implements ClassHandlerInterface
     {
         var_dump($id);
         var_dump($statusCode);
-        exit();
-        // $query = "UPDATE tasks SET task_status = :status, task_status_name = :statusName WHERE id = :id";
-        // $statement = $this->connection->prepare($query);
-        // $statement->bindValue(':id', $id);
+        $query = "UPDATE tasks SET task_status = :status, task_status_name = :newStatusName WHERE task_id = :id";
+        $statement = $this->connection->prepare($query);
+        $statement->bindValue(':id', $id);
 
-        // switch($statusCode) {
-        //     case 0:
-        //         $dateTime = $this->getDateTime();
-        //         $newStatusName = 'Iniciada / Pendente';
-        //         $statement->bindValue(':status', 1);
-        //         $initQuery = "UPDATE tasks SET task_init_date = :initDate, task_status_name = :newStatusName WHERE id = :id";
-        //         $initStatement = $this->connection->prepare($initQuery);
-        //         $initStatement->bindValue(':initDate', $dateTime);
-        //         $initStatement->bindValue(':newStatusName', $newStatusName);
-        //         $statement->execute();
-        //         $initStatement->execute();
-        //     break;
-        //     case 1:
-        //         $dateTime = $this->getDateTime();
-        //         $newStatusName = 'Finalizada';
-        //         $statement->bindValue(':status', 2);
-        //         $finishQuery = "UPDATE tasks SET task_conclusion_date = :conclusionDate, task_status_name = :newStatusName WHERE id = :id";
-        //         $finishStatement = $this->connection->prepare($finishQuery);
-        //         $finishStatement->bindValue(':conclusionDate', $dateTime);
-        //         $finishStatement->bindValue(':newStatusName', $newStatusName);
-        //         $statement->execute();
-        //         $finishStatement->execute();
-        //     break;
-        //     case 2:
-        //         $dateTime = '---';
-        //         $newStatusName = 'Iniciada / Pendente';
-        //         $statement->bindValue(':status', 1);
-        //         $unfinishQuery = "UPDATE tasks SET task_conclusion_date = :conclusionDate, task_status_name = :newStatusName WHERE id = :id";
-        //         $unfinishStatement = $this->connection->prepare($unfinishQuery);
-        //         $unfinishStatement->bindValue(':conclusionDate', $dateTime);
-        //         $unfinishStatement->bindValue(':newStatusName', $newStatusName);
-        //         $statement->execute();
-        //         $unfinishStatement->execute();
-        //     break;
-        // }
-        // header($this->redirect);
+        switch($statusCode) {
+            case 0:
+                $dateTime = $this->getDateTime();
+                $newStatusName = 'Iniciada / Pendente';
+                $statement->bindValue(':status', 1);
+                $statement->bindValue(':newStatusName', $newStatusName);
+                $initQuery = "UPDATE tasks SET task_init_date = :initDate WHERE task_id = :id";
+                $initStatement = $this->connection->prepare($initQuery);
+                $initStatement->bindValue(':id', $id);
+                $initStatement->bindValue(':initDate', $dateTime);
+                $statement->execute();
+                $initStatement->execute();
+                header($this->redirect);
+            break;
+            case 1:
+                $dateTime = $this->getDateTime();
+                $newStatusName = 'Finalizada';
+                $statement->bindValue(':status', 2);
+                $statement->bindValue(':newStatusName', $newStatusName);
+                $finishQuery = "UPDATE tasks SET task_conclusion_date = :conclusionDate WHERE task_id = :id";
+                $finishStatement = $this->connection->prepare($finishQuery);
+                $finishStatement->bindValue(':id', $id);
+                $finishStatement->bindValue(':conclusionDate', $dateTime);
+                $statement->execute();
+                $finishStatement->execute();
+                header($this->redirect);
+            break;
+            case 2:
+                $dateTime = '---';
+                $newStatusName = 'Iniciada / Pendente';
+                $statement->bindValue(':status', 1);
+                $statement->bindValue(':newStatusName', $newStatusName);
+                $unfinishQuery = "UPDATE tasks SET task_conclusion_date = :conclusionDate WHERE task_id = :id";
+                $unfinishStatement = $this->connection->prepare($unfinishQuery);
+                $unfinishStatement->bindValue(':id', $id);
+                $unfinishStatement->bindValue(':conclusionDate', $dateTime);
+                $statement->execute();
+                $unfinishStatement->execute();
+                header($this->redirect);
+            break;
+        }
+        header($this->redirect);
     }
 }

@@ -72,7 +72,7 @@
                                 </button>
                                 <?php } else { ?>
                                 <label for="input-status">Concluir :</label>
-                                <input type="checkbox" checked=<?php echo $task['task_status'] === 2; ?>>
+                                <input type="checkbox" c<?php echo $task['task_status'] === 2 ? "checked" : ""; ?>>
                                 <?php } ?>
                             </td>
                             <td class="align-middle text-center">
