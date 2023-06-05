@@ -51,7 +51,12 @@ class TaskController implements ClassHandlerInterface
                 $this->setTaskStatus($taskId, $taskStatus);
                 break;
             case '/update-name-description':
-                echo "Oi!!!!!";
+                $taskData = file_get_contents('php://input');
+                $data = json_decode($taskData, true);
+                $taskId = $data['taskId'];
+                $text = $data['text'];
+                $column = $data['column'];
+                $this->setTaskTextData($taskId, $text, $column);
                 break;
         }
 
@@ -158,5 +163,15 @@ class TaskController implements ClassHandlerInterface
             break;
             header($this->redirect);
         }
+    }
+
+    public function setTaskTextData($id, $value, $column): void
+    {
+        $allowedColumns = ['task_name', 'task_description'];
+        $query = "UPDATE tasks SET $column = :value WHERE task_id = :id";
+        $statement = $this->connection->prepare($query);
+        $statement->bindValue(':value', $value);
+        $statement->bindValue(':id', $id);
+        $statement->execute();
     }
 }

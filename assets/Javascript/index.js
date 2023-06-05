@@ -39,9 +39,9 @@ if (tdCell.length > 0) {
         editMode = true;
       } else {
         toggleElementVisibility(spanTag, cellInput);
-        if (cellInput.dataset.namecell) {
+        if (cellInput.dataset.namecell === 'task_name') {
           column = 'task_name';
-        } else if (cellInput.dataset.descriptioncell) {
+        } else {
           column = 'task_description';
         }
         updateTextData(spanTag.dataset.id, cellInput.value, column);
@@ -60,6 +60,7 @@ async function updateTextData(taskId, text, column) {
     text,
     column,
   };
+  console.log('column', column);
   const options = {
     method: 'POST',
     headers: {
@@ -69,7 +70,6 @@ async function updateTextData(taskId, text, column) {
   };
   try {
     const response = await fetch(url, options);
-
     if (response.ok) {
       console.log('Dados enviados com sucesso!');
     }

@@ -68,7 +68,7 @@
                                     type="text"
                                     class="form-control input-hidden d-none"
                                     value="<?= $task['task_name'] ?>"
-                                    data-namecell
+                                    data-namecell="task_name"
                                     >
                                 </form>
                             </td>
@@ -88,7 +88,7 @@
                                     type="text"
                                     class="form-control input-hidden d-none"
                                     value="<?= $task['task_description'] ?>"
-                                    data-descriptioncell
+                                    data-descriptioncell="task_description"
                                     >
                                 </form>
                             </td>
