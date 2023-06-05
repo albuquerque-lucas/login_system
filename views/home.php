@@ -52,8 +52,46 @@
                 <tbody>
                     <?php foreach ($tasks as $task) { ?>
                         <tr>
-                            <td class="text-center"><?= $task['task_name'] ?></td>
-                            <td><?= $task['task_description'] ?></td>
+                            <td class="input-cell text-center">
+                                <span
+                                class="cell-value"
+                                data-id =<?php echo $task['task_id']?>
+                                >
+                                <?= $task['task_name'] ?>
+                                </span>
+                                <form
+                                action="/update-name-description"
+                                method="post"
+                                class="text-form"
+                                data-namecell
+                                >
+                                    <input
+                                    type="text"
+                                    class="form-control input-hidden d-none"
+                                    value="<?= $task['task_name'] ?>"
+                                    >
+                                </form>
+                            </td>
+                            <td class="input-cell">
+                                <span
+                                class="cell-value"
+                                data-id =<?php echo $task['task_id']?>
+                                >
+                                    <?= $task['task_description'] ?>
+                                </span>
+                                <form
+                                action="/update-name-description"
+                                method="post" 
+                                class="text-form"
+                                data-descriptioncell
+                                >
+                                    <input
+                                    type="text"
+                                    class="form-control input-hidden d-none"
+                                    value="<?= $task['task_description'] ?>"
+                                    >
+                                </form>
+                            </td>
                             <td class="text-center"><?= $task['task_creation_date'] ?></td>
                             <td class="text-center"><?= $task['task_init_date'] ?></td>
                             <td class="text-center"><?= $task['task_conclusion_date'] ?></td>
