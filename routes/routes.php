@@ -15,7 +15,7 @@ $routes = [
     '/logout' => AuthController::class,
     '/register' => RegisterView::class,
     '/create-user' => UserController::class, 
-    '/update-task' => TaskController::class,
+    '/update-status' => TaskController::class,
 ];
 
 return $routes;

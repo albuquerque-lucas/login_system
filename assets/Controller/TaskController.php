@@ -39,13 +39,16 @@ class TaskController implements ClassHandlerInterface
             case '/delete':
                 $this->removeTask($_POST['id']);
                 break;
-            case '/update-task':
-                $data = json_decode(file_get_contents('php://input'), true);
-                if ($data !== null) {
-                    $taskId = $data['taskId'];
-                    $status = $data['status'];
+            case '/update-status':
+                $taskData = filter_input(INPUT_POST, 'status-zero', FILTER_DEFAULT);
+                $checkboxData = filter_input(INPUT_POST, 'status-checkbox', FILTER_DEFAULT);
+                if ($taskData) {
+                    $data = json_decode($taskData, true);
+                } else if ($checkboxData) {
+                    $data = json_decode($checkboxData, true);
                 }
-                $this->setTaskStatus($taskId, $status);
+                list($taskId, $taskStatus) = $data;
+                $this->setTaskStatus($taskId, $taskStatus);
                 break;
         }
 
@@ -106,8 +109,6 @@ class TaskController implements ClassHandlerInterface
 
     private function setTaskStatus(int $id, $statusCode): void
     {
-        var_dump($id);
-        var_dump($statusCode);
         $query = "UPDATE tasks SET task_status = :status, task_status_name = :newStatusName WHERE task_id = :id";
         $statement = $this->connection->prepare($query);
         $statement->bindValue(':id', $id);
@@ -124,6 +125,7 @@ class TaskController implements ClassHandlerInterface
                 $initStatement->bindValue(':initDate', $dateTime);
                 $statement->execute();
                 $initStatement->execute();
+                header($this->redirect);
             break;
             case 1:
                 $dateTime = $this->getDateTime();
@@ -136,6 +138,7 @@ class TaskController implements ClassHandlerInterface
                 $finishStatement->bindValue(':conclusionDate', $dateTime);
                 $statement->execute();
                 $finishStatement->execute();
+                header($this->redirect);
             break;
             case 2:
                 $dateTime = '---';
@@ -148,7 +151,9 @@ class TaskController implements ClassHandlerInterface
                 $unfinishStatement->bindValue(':conclusionDate', $dateTime);
                 $statement->execute();
                 $unfinishStatement->execute();
+                header($this->redirect);
             break;
+            header($this->redirect);
         }
     }
 }

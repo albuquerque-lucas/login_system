@@ -61,25 +61,28 @@
                         <?php if ($status) { ?>
                             <td class="align-middle text-center">
                                 <?php if ($task['task_status'] === 0) {?>
-                                <button
-                                    id="init-btn"
-                                    type="button"
-                                    class="btn btn-sm btn-primary rounded"
-                                    data-status="<?php echo $task['task_status']?>"
-                                    data-id="<?php echo $task['task_id']?>"
-                                    >
-                                    Iniciar
-                                </button>
+                                    <form action="/update-status" method="post">
+                                        <input type="hidden" name="status-zero" value="<?php echo htmlentities(json_encode([$task['task_id'], $task['task_status']]));?>">
+                                        <button
+                                            type="submit"
+                                            id="init-btn"
+                                            type="button"
+                                            class="btn btn-sm btn-primary rounded"
+                                            >
+                                            Iniciar
+                                        </button>
+                                    </form>
                                 <?php } else { ?>
-                                <label for="status-checkbox">Concluir :</label>
-                                <input
-                                id="status-checkbox"
-                                name="status-checkbox"
-                                type="checkbox"
-                                data-checkstatus="<?php echo $task['task_status']?>"
-                                data-checkid="<?php echo $task['task_id']?>"
-                                <?php echo $task['task_status'] === 2 ? "checked" : ""; ?>
-                                >
+                                    <form action="/update-status" method="post" id="checkbox-form">
+                                        <label for="status-checkbox">Concluir :</label>
+                                        <input
+                                        id="status-checkbox"
+                                        name="status-checkbox"
+                                        type="checkbox"
+                                        value="<?php echo htmlentities(json_encode([$task['task_id'], $task['task_status']]));?>"
+                                        <?php echo $task['task_status'] === 2 ? "checked" : ""; ?>
+                                        >
+                                    </form>
                                 <?php } ?>
                             </td>
                             <td class="align-middle text-center">
