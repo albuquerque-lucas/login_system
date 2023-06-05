@@ -57,7 +57,7 @@
                             <td class="text-center"><?= $task['task_creation_date'] ?></td>
                             <td class="text-center"><?= $task['task_init_date'] ?></td>
                             <td class="text-center"><?= $task['task_conclusion_date'] ?></td>
-                            <td class="text-center"><?= $task['task_status_name'] ?></td>
+                            <td class="text-center" id="status-name"><?= $task['task_status_name'] ?></td>
                         <?php if ($status) { ?>
                             <td class="align-middle text-center">
                                 <?php if ($task['task_status'] === 0) {?>
@@ -71,8 +71,15 @@
                                     Iniciar
                                 </button>
                                 <?php } else { ?>
-                                <label for="input-status">Concluir :</label>
-                                <input type="checkbox" c<?php echo $task['task_status'] === 2 ? "checked" : ""; ?>>
+                                <label for="status-checkbox">Concluir :</label>
+                                <input
+                                id="status-checkbox"
+                                name="status-checkbox"
+                                type="checkbox"
+                                data-checkstatus="<?php echo $task['task_status']?>"
+                                data-checkid="<?php echo $task['task_id']?>"
+                                <?php echo $task['task_status'] === 2 ? "checked" : ""; ?>
+                                >
                                 <?php } ?>
                             </td>
                             <td class="align-middle text-center">

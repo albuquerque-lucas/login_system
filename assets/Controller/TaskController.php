@@ -124,7 +124,6 @@ class TaskController implements ClassHandlerInterface
                 $initStatement->bindValue(':initDate', $dateTime);
                 $statement->execute();
                 $initStatement->execute();
-                header($this->redirect);
             break;
             case 1:
                 $dateTime = $this->getDateTime();
@@ -137,7 +136,6 @@ class TaskController implements ClassHandlerInterface
                 $finishStatement->bindValue(':conclusionDate', $dateTime);
                 $statement->execute();
                 $finishStatement->execute();
-                header($this->redirect);
             break;
             case 2:
                 $dateTime = '---';
@@ -150,9 +148,7 @@ class TaskController implements ClassHandlerInterface
                 $unfinishStatement->bindValue(':conclusionDate', $dateTime);
                 $statement->execute();
                 $unfinishStatement->execute();
-                header($this->redirect);
             break;
         }
-        header($this->redirect);
     }
 }
