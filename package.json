@@ -1,0 +1,25 @@
+{
+  "name": "login_system",
+  "version": "1.0.0",
+  "description": "Secure login system",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/albuquerque-lucas/login_system.git"
+  },
+  "keywords": [
+    "login",
+    "system",
+    "secure"
+  ],
+  "author": "Lucas Albuquerque",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/albuquerque-lucas/login_system/issues"
+  },
+  "homepage": "https://github.com/albuquerque-lucas/login_system#readme"
+}
