@@ -33,16 +33,25 @@ if (tdCell.length > 0) {
     cell.addEventListener('dblclick', () => {
       const spanTag = cell.querySelector('.cell-value');
       const cellInput = cell.querySelector('.input-hidden');
+      let column;
       if (editMode === false) {
         toggleElementVisibility(cellInput, spanTag);
         editMode = true;
       } else {
         toggleElementVisibility(spanTag, cellInput);
+        if (cellInput.dataset.namecell) {
+          column = 'task_name';
+        } else if (cellInput.dataset.descriptioncell) {
+          column = 'task_description';
+        }
+        updateTextData(spanTag.dataset.id, cellInput.value, column);
         spanTag.textContent = cellInput.value;
         editMode = false;
       }
     });
   });
+
+}
 
 async function updateTextData(taskId, text, column) {
   const url = '/update-name-description';

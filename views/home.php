@@ -63,12 +63,12 @@
                                 action="/update-name-description"
                                 method="post"
                                 class="text-form"
-                                data-namecell
                                 >
                                     <input
                                     type="text"
                                     class="form-control input-hidden d-none"
                                     value="<?= $task['task_name'] ?>"
+                                    data-namecell
                                     >
                                 </form>
                             </td>
@@ -83,12 +83,12 @@
                                 action="/update-name-description"
                                 method="post" 
                                 class="text-form"
-                                data-descriptioncell
                                 >
                                     <input
                                     type="text"
                                     class="form-control input-hidden d-none"
                                     value="<?= $task['task_description'] ?>"
+                                    data-descriptioncell
                                     >
                                 </form>
                             </td>
