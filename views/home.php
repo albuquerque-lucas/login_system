@@ -76,6 +76,11 @@
                                     <form action="/update-status" method="post" id="checkbox-form">
                                         <label for="status-checkbox">Concluir :</label>
                                         <input
+                                        type="hidden"
+                                        name="status-checkbox"
+                                        value="<?php echo htmlentities(json_encode([$task['task_id'], $task['task_status']]));?>"
+                                        >
+                                        <input
                                         id="status-checkbox"
                                         name="status-checkbox"
                                         type="checkbox"

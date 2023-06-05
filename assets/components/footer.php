@@ -8,7 +8,12 @@
         checkboxForm.submit();
     }
     statusCheckbox.addEventListener('change', () => {
-        submitForm();
+        if(!statusCheckbox.checked) {
+            submitForm();
+        } else {
+            submitForm();
+        }
+
     })
     // import { updateStatus } from '../../index.js';
     // const initBtn = document.getElementById('init-btn');
