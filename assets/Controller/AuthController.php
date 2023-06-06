@@ -56,6 +56,10 @@ class AuthController implements ClassHandlerInterface
                         $user = $this->findUser($userName, $password);
                     } else if ($result) {
                         $user = $this->findUser($tempUserName, $tempUserPassword);
+                    } else {
+                        $expTime = time() + 1;
+                        $message = "<span>Erro do else da chamada de findUser.</span>";
+                        throw new AuthException('errorMessage', $message, $expTime, $this->redirectLogin);
                     };
     
                     if($user['user_id'] > 0){
@@ -80,9 +84,12 @@ class AuthController implements ClassHandlerInterface
                 setcookie('authMessage', $message, $expTime);
                 throw new AuthException('authMessage', $message, $expTime, $this->redirectHome);
             }
-        } catch( AuthException $exception) {
+        } catch(AuthException $exception) {
             $message = $exception->getMessage();
-            $messageType = $exception->getMessageType().
+            $messageType = $exception->getMessageType();
+            var_dump($messageType);
+            var_dump($message);
+            exit();
             $expiration = $exception->getExpiration();
             $redirect = $exception->getRedirect();
             setcookie($messageType, $message, $expiration, $redirect);
