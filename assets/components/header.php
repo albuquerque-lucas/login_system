@@ -28,7 +28,7 @@ list($status, $user) = $sessionInfo;
             <?php if ($status) { ?>
                 <li class="nav-item">
                     <form action="/logout" method="post">
-                        <input type="hidden" name="userid" value="<?php echo $user['user_id']; ?>">
+                        <input type="hidden" name="userid" value="<?= $user['user_id']; ?>">
                         <button class="btn btn-outline-light" type="submit">Logout</button>
                     </form>
                 </li>

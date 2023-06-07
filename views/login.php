@@ -7,7 +7,7 @@ if (isset($_SESSION['errorMessage'])) {
     unset($_SESSION['messageType']);
 ?>
     <div class="alert alert-danger mx-auto w-50" role="alert">
-        <strong>Erro: </strong><?php echo $message; ?>
+        <strong>Erro: </strong><?= $message; ?>
     </div>
 <?php } ?>
 
