@@ -94,61 +94,55 @@ class AuthController implements ClassHandlerInterface
     if(!isset($_SESSION)){
         session_start();
     }
-
     if(isset($_COOKIE['sessions_userid']) && isset($_COOKIE['sessions_token']) && isset($_COOKIE['sessions_serial'])){
-        try {
-            $query = "SELECT * FROM sessions WHERE sessions_userid = :userId AND sessions_token = :token AND sessions_serial = :serial;";
-            $statement = $this->connection->prepare($query);
-    
-            $id = $_COOKIE['sessions_userid'];
-            $token = $_COOKIE['sessions_token'];
-            $serial = $_COOKIE['sessions_serial'];
-    
-            $statement->bindValue(':userId', $id, PDO::PARAM_INT);
-            $statement->bindValue(':token', $token, PDO::PARAM_INT);
-            $statement->bindValue(':serial', $serial, PDO::PARAM_INT);
-    
-            $statement->execute();
-    
-            $session = $statement->fetch(PDO::FETCH_ASSOC);
-    
-            if ($session['sessions_userid'] > 0) {
-                if($session['sessions_userid'] == $_COOKIE['sessions_userid']
-                && $session['sessions_token'] == $_COOKIE['sessions_token']
-                && $session['sessions_serial'] == $_COOKIE['sessions_serial']) {
-                        if($session['sessions_userid'] == $_SESSION['sessions_id']
-                        && $session['sessions_token'] == $_SESSION['sessions_token']
-                        && $session['sessions_serial'] == $_SESSION['sessions_serial']) {
-                            return true;
-                        } else{
-                            $this->createSession($_COOKIE['user_username'], $_COOKIE['sessions_userid'], $_COOKIE['sessions_token'], $_COOKIE['sessions_serial']);
-                            return true;
-                        }
-                } else {
-                    throw new Exception('Não foi identificada uma sessão válida. Os dados de sessão informados não correspondem aos dados salvos no seu navegador.');
-                }
+        $query = "SELECT * FROM sessions WHERE sessions_userid = :userId AND sessions_token = :token AND sessions_serial = :serial;";
+        $statement = $this->connection->prepare($query);
+
+        $id = $_COOKIE['sessions_userid'];
+        $token = $_COOKIE['sessions_token'];
+        $serial = $_COOKIE['sessions_serial'];
+
+        $statement->bindValue(':userId', $id, PDO::PARAM_INT);
+        $statement->bindValue(':token', $token, PDO::PARAM_INT);
+        $statement->bindValue(':serial', $serial, PDO::PARAM_INT);
+
+        $statement->execute();
+
+        $session = $statement->fetch(PDO::FETCH_ASSOC);
+        if ($session['sessions_id'] > 0) {
+            if($session['sessions_userid'] == $_COOKIE['sessions_userid']
+            && $session['sessions_token'] == $_COOKIE['sessions_token']
+            && $session['sessions_serial'] == $_COOKIE['sessions_serial']) {
+                    if($session['sessions_userid'] == $_SESSION['sessions_id']
+                    && $session['sessions_token'] == $_SESSION['sessions_token']
+                    && $session['sessions_serial'] == $_SESSION['sessions_serial']) {
+                        return true;
+                    } else{
+                        $this->createSession($_COOKIE['user_username'], $_COOKIE['sessions_userid'], $_COOKIE['sessions_token'], $_COOKIE['sessions_serial']);
+                        return true;
+                    }
             } else {
-                throw new Exception('Sessão não encontrada.');
+                return false;
             }
-        } catch(Exception $exception) {
-            setcookie('errorMessage', $exception->getMessage(), time() + 3);
-            header($this->redirectLogin);
+        } else {
+            return false;
         }
         
     }
+    return false;
     }
 
-    private function createString(): string
+    private static function createString(int $length): string
     {
         $string = "1qaz2wsx3edc4rfv5tgb6yhn7ujm8ik9ol0pQAZWSXEDCRFVTGBYHNUJMIKOLP";
-        return substr(str_shuffle($string), 0, 32);
+        return substr(str_shuffle($string), 0, $length);
     }
 
     private function createRecord($userId, $userName): void
     {
         $query = "INSERT INTO sessions (sessions_userid, sessions_token, sessions_serial, sessions_datetime) VALUES (:userid, :token, :serial, :date)";
-        $token = $this->createString(32);
-        $serial = $this->createString(32);
+        $token = self::createString(32);
+        $serial = self::createString(32);
         
         $this->createCoockie($userName, $userId, $token, $serial);
         $this->createSession($userName, $userId, $token, $serial);
@@ -165,10 +159,10 @@ class AuthController implements ClassHandlerInterface
 
     private function createCoockie($userName, $userId, $token, $serial): void
     {
-            setcookie('sessions_userid', $userId, time() + (86400) * 30, "/");
-            setcookie('sessions_username', $userName, time() + (86400) * 30, "/");
-            setcookie('sessions_token', $token, time() + (86400) * 30, "/");
-            setcookie('sessions_serial', $serial, time() + (86400) * 30, "/");
+            setcookie('sessions_userid', $userId, time() + 3600, "/");
+            setcookie('sessions_username', $userName, time() + 3600, "/");
+            setcookie('sessions_token', $token, time() + 3600, "/");
+            setcookie('sessions_serial', $serial, time() + 3600, "/");
     }
 
     private function createSession($userName, $userId, $token, $serial):void
