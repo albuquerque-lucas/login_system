@@ -1,17 +1,18 @@
 <?php include './assets/components/header.php'; ?>
 
-<?php
-if (isset($_SESSION['errorMessage'])) {
-    $message = $_SESSION['errorMessage'];
-    unset($_SESSION['errorMessage']);
-    unset($_SESSION['messageType']);
-?>
-    <div class="alert alert-danger mx-auto w-50" role="alert">
-        <strong>Erro: </strong><?= $message; ?>
-    </div>
-<?php } ?>
-
-<div class="container d-flex align-items-center justify-content-center mt-5" style="height:55vh;">
+<div class="mt-5" style="height:15vh;">
+    <?php
+    if (isset($_SESSION['errorMessage'])) {
+        $message = $_SESSION['errorMessage'];
+        unset($_SESSION['errorMessage']);
+        unset($_SESSION['messageType']);
+    ?>
+        <div class="alert alert-danger mx-auto w-50" role="alert">
+            <strong>Erro:</strong> <?= $message; ?>
+        </div>
+    <?php } ?>
+</div>
+<div class="container d-flex flex-column align-items-center mt-2">
     <form method="post" action="/authenticate">
         <div class="mb-3">
             <label for="username" class="form-label">Email or User name</label>
