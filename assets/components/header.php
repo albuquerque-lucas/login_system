@@ -2,7 +2,6 @@
 require './vendor/autoload.php';
 use LucasAlbuquerque\LoginSystem\Controller\AuthController;
 $authController = new AuthController();
-//$loginState = $authController->checkLoginState();
 $sessionInfo = $authController->checkSessionStatus();
 list($status, $user) = $sessionInfo;
 ?>
@@ -20,7 +19,6 @@ list($status, $user) = $sessionInfo;
 </head>
 
 <body>
-
 <header>
     <nav class="navbar navbar-dark bg-dark navbar-expand-lg d-flex flex-column">
         <ul class="navbar-nav w-25 d-flex justify-content-between align-self-center">

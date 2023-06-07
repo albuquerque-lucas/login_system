@@ -56,43 +56,40 @@ class AuthController implements ClassHandlerInterface
                         $user = $this->findUser($userName, $password);
                     } else if ($result) {
                         $user = $this->findUser($tempUserName, $tempUserPassword);
+                    } else {
+                        $message = "<span>Você precisa digitar um nome de usuário válido.</span>";
+                        throw new AuthException($message, 'errorMessage');
                     };
     
                     if($user['user_id'] > 0){
                         $this->createRecord($user['user_id'], $user['user_username']);
-                        $expTime = time() + 1;
                         $message = "<h4>Seja bem vindo, {$user['user_firstname']} {$user['user_lastname']}!</h4>";
-                        setcookie('welcomeMessage', $message, $expTime);
+                        $_SESSION['welcomeMessage'] = $message;
                         header($this->redirectHome);
                     } else{
-                        $expTime = time() + 1;
                         $message = "<span>Usuário ou senha inválidos.</span>";
-                        throw new AuthException('errorMessage', $message, $expTime, $this->redirectLogin);
+                        throw new AuthException($message, 'errorMessage');
                     }
                 }else{
-                    $expTime = time() + 1;
                     $message = "<span>Não foi possível verificar valores dos inputs.</span>";
-                    throw new AuthException('errorMessage', $message, $expTime, $this->redirectLogin);
+                    throw new AuthException($message, 'errorMessage');
                 }
             } else{
-                $expTime = time() + 1;
-                $message = '<p>Você já está logado!</p>';
-                setcookie('authMessage', $message, $expTime);
-                throw new AuthException('authMessage', $message, $expTime, $this->redirectHome);
+                $message = "<span>Você já está logado!</span>";
+                throw new AuthException($message, 'authMessage');
             }
-        } catch( AuthException $exception) {
+        } catch(AuthException $exception) {
             $message = $exception->getMessage();
-            $messageType = $exception->getMessageType().
-            $expiration = $exception->getExpiration();
-            $redirect = $exception->getRedirect();
-            setcookie($messageType, $message, $expiration, $redirect);
-            header($redirect);
+            $messageType = $exception->getMessageType();
+            $_SESSION['errorMessage'] = $message;
+            $_SESSION['errorMessageType'] = $messageType;
+            header($this->redirectLogin);
         }
 
         
     }
 
-    public function checkLoginState()
+    private function checkLoginState()
     {
     if(!isset($_SESSION)){
         session_start();
