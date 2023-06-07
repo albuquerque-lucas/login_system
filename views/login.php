@@ -6,12 +6,12 @@ if (isset($_SESSION['errorMessage'])) {
     unset($_SESSION['errorMessage']);
     unset($_SESSION['messageType']);
 ?>
-    <div class="alert alert-danger text-center m-3 mx-auto w-50" role="alert">
+    <div class="alert alert-danger mx-auto w-50" role="alert">
         <strong>Erro: </strong><?php echo $message; ?>
     </div>
 <?php } ?>
 
-<div class="container d-flex flex-column align-items-center mt-5">
+<div class="container d-flex align-items-center justify-content-center mt-5" style="height:55vh;">
     <form method="post" action="/authenticate">
         <div class="mb-3">
             <label for="username" class="form-label">Email or User name</label>

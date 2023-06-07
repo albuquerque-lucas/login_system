@@ -57,7 +57,7 @@ class AuthController implements ClassHandlerInterface
                     } else if ($result) {
                         $user = $this->findUser($tempUserName, $tempUserPassword);
                     } else {
-                        $message = "<span>Erro do else da chamada de findUser.</span>";
+                        $message = "<span>Você precisa digitar um nome de usuário válido.</span>";
                         throw new AuthException($message, 'errorMessage');
                     };
     
@@ -89,7 +89,7 @@ class AuthController implements ClassHandlerInterface
         
     }
 
-    public function checkLoginState()
+    private function checkLoginState()
     {
     if(!isset($_SESSION)){
         session_start();

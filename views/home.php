@@ -1,7 +1,7 @@
 <?php include './assets/components/header.php'; ?>
 
 <div class="container">
-    <h1 class="text-center">Tarefas</h1>
+    <h1 class="text-center mt-5">Tarefas</h1>
     <div id="mensagemView">
         <?php if (isset($_SESSION['authMessage']) || isset($_SESSION['welcomeMessage'])) { ?>
             <div class='alert alert-success'>
@@ -26,7 +26,7 @@
                 <label for="task_description">Descrição</label>
                 <input type="text" id="task_description" name="task_description" class="form-control" required/>
             </div>
-            <button class="btn btn-primary mt-2" type="submit">Incluir</button>
+            <button class="btn btn-dark mt-2" type="submit">Incluir</button>
         </form>
     <?php } ?>
     <br>
