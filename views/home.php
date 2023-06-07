@@ -5,8 +5,8 @@
     <div id="mensagemView">
         <?php if (isset($_SESSION['authMessage']) || isset($_SESSION['welcomeMessage'])) { ?>
             <div class='alert alert-success'>
-                <?php echo $_SESSION['welcomeMessage']; ?>
-                <?php echo $_SESSION['authMessage']; ?>
+                <?= $_SESSION['welcomeMessage']; ?>
+                <?= $_SESSION['authMessage']; ?>
             </div>
         <?php
             unset($_SESSION['welcomeMessage']);
@@ -52,7 +52,7 @@
                     <?php foreach ($tasks as $task) { ?>
                         <tr>
                             <td class="input-cell text-center">
-                                <span class="cell-value" data-id="<?php echo $task['task_id'] ?>">
+                                <span class="cell-value" data-id="<?= $task['task_id'] ?>">
                                     <?= $task['task_name'] ?>
                                 </span>
                                 <form action="/update-name-description" method="post" class="text-form">
@@ -60,7 +60,7 @@
                                 </form>
                             </td>
                             <td class="input-cell">
-                                <span class="cell-value" data-id="<?php echo $task['task_id'] ?>">
+                                <span class="cell-value" data-id="<?= $task['task_id'] ?>">
                                     <?= $task['task_description'] ?>
                                 </span>
                                 <form action="/update-name-description" method="post" class="text-form">
@@ -75,7 +75,7 @@
                                 <td class="align-middle text-center">
                                     <?php if ($task['task_status'] === 0) { ?>
                                         <form action="/update-status" method="post">
-                                            <input type="hidden" name="status-zero" value="<?php echo htmlentities(json_encode([$task['task_id'], $task['task_status']])); ?>">
+                                            <input type="hidden" name="status-zero" value="<?= htmlentities(json_encode([$task['task_id'], $task['task_status']])); ?>">
                                             <button type="submit" id="init-btn" class="btn btn-sm btn-primary rounded">
                                                 Iniciar
                                             </button>
@@ -83,14 +83,14 @@
                                     <?php } else { ?>
                                         <form action="/update-status" method="post" id="checkbox-form">
                                             <label for="status-checkbox">Concluir:</label>
-                                            <input type="hidden" name="status-checkbox" value="<?php echo htmlentities(json_encode([$task['task_id'], $task['task_status']])); ?>">
-                                            <input id="status-checkbox" name="status-checkbox" type="checkbox" value="<?php echo htmlentities(json_encode([$task['task_id'], $task['task_status']])); ?>" <?php echo $task['task_status'] === 2 ? "checked" : ""; ?>>
+                                            <input type="hidden" name="status-checkbox" value="<?= htmlentities(json_encode([$task['task_id'], $task['task_status']])); ?>">
+                                            <input id="status-checkbox" name="status-checkbox" type="checkbox" value="<?= htmlentities(json_encode([$task['task_id'], $task['task_status']])); ?>" <?= $task['task_status'] === 2 ? "checked" : ""; ?>>
                                         </form>
                                     <?php } ?>
                                 </td>
                                 <td class="align-middle text-center">
                                     <form action="/delete" method="post">
-                                        <input type="hidden" name="id" value="<?php echo $task['task_id'] ?>" class="d-none">
+                                        <input type="hidden" name="id" value="<?= $task['task_id'] ?>" class="d-none">
                                         <button type="submit" class="btn btn-sm btn-danger">
                                             <i class="fa fa-trash"></i>
                                         </button>
