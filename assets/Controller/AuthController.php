@@ -1,8 +1,6 @@
 <?php
 
 namespace LucasAlbuquerque\LoginSystem\Controller;
-
-use Exception;
 use LucasAlbuquerque\LoginSystem\Exceptions\AuthException;
 use LucasAlbuquerque\LoginSystem\Handler\ClassHandlerInterface;
 use LucasAlbuquerque\LoginSystem\Infrastructure\DatabaseConnection;
@@ -34,7 +32,7 @@ class AuthController implements ClassHandlerInterface
         }
     }
 
-    private function authenticate()
+    private function authenticate(): void
     {
         $userName = filter_input(INPUT_POST, 'username', FILTER_UNSAFE_RAW);
         $password = filter_input(INPUT_POST, 'password', FILTER_UNSAFE_RAW);
@@ -89,7 +87,7 @@ class AuthController implements ClassHandlerInterface
         
     }
 
-    private function checkLoginState()
+    private function checkLoginState(): bool
     {
     if(!isset($_SESSION)){
         session_start();
@@ -165,7 +163,7 @@ class AuthController implements ClassHandlerInterface
             setcookie('sessions_serial', $serial, time() + 3600, "/");
     }
 
-    private function createSession($userName, $userId, $token, $serial):void
+    private function createSession($userName, $userId, $token, $serial): void
     {
         if(!isset($_SESSION)){
             session_start();
@@ -181,11 +179,11 @@ class AuthController implements ClassHandlerInterface
         setcookie('sessions_userid', '', time() - 1, "/");
         setcookie('sessions_username', '', time() - 1, "/");
         setcookie('sessions_token', '', time() - 1, "/");
-        setcookie('sessions_serial', '', - 1, "/");
+        setcookie('sessions_serial', '', time() - 1, "/");
         header($this->redirectHome);
     }
 
-    public function deleteSession($userId):void
+    public function deleteSession($userId): void
     {
         $searchQuery = "SELECT * FROM sessions WHERE sessions_userid = :user_id";
         $searchStatement = $this->connection->prepare($searchQuery);
@@ -202,7 +200,7 @@ class AuthController implements ClassHandlerInterface
         header($this->redirectLogin);
     }
 
-    private function findUser($userName, $password)
+    private function findUser($userName, $password): array
     {
         $query = "SELECT * FROM users WHERE user_username = :username AND user_password = :password";
 
@@ -224,7 +222,7 @@ class AuthController implements ClassHandlerInterface
 
     }
 
-    public function checkSessionStatus()
+    public function checkSessionStatus(): array
     {
         $sessionsQuery = "SELECT * FROM sessions";
         $statement = $this->connection->prepare($sessionsQuery);
