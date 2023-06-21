@@ -5,6 +5,8 @@ use LucasAlbuquerque\LoginSystem\Exceptions\AuthException;
 use LucasAlbuquerque\LoginSystem\Handler\ClassHandlerInterface;
 use LucasAlbuquerque\LoginSystem\Infrastructure\DatabaseConnection;
 use PDO;
+use DateTime;
+use DateTimeZone;
 
 class AuthController implements ClassHandlerInterface
 {
@@ -149,7 +151,7 @@ class AuthController implements ClassHandlerInterface
         $statement->bindValue(':userid', $userId);
         $statement->bindValue(':token', $token);
         $statement->bindValue(':serial', $serial);
-        $statement->bindValue(':date', '20/12/1999');
+        $statement->bindValue(':date', $this->getDateTime());
         $statement->execute();
     }
 
@@ -222,7 +224,7 @@ class AuthController implements ClassHandlerInterface
 
     }
 
-    public function checkSessionStatus(): array
+    public function checkSessionStatus()
     {
         $sessionsQuery = "SELECT * FROM sessions";
         $statement = $this->connection->prepare($sessionsQuery);
@@ -240,5 +242,13 @@ class AuthController implements ClassHandlerInterface
         }
 
         return [$status, $user];
+    }
+
+    private function getDateTime()
+    {
+        $now = new DateTime('now');
+        $now->setTimezone(new DateTimeZone('America/Sao_Paulo'));
+        $dateTime = $now->format('Y-m-d H:i:s');
+        return $dateTime;
     }
 }
