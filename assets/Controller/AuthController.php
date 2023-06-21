@@ -7,6 +7,8 @@ use LucasAlbuquerque\LoginSystem\Infrastructure\DatabaseConnection;
 use PDO;
 use DateTime;
 use DateTimeZone;
+use LucasAlbuquerque\LoginSystem\View\LoginView;
+use LucasAlbuquerque\LoginSystem\View\RegisterView;
 
 class AuthController implements ClassHandlerInterface
 {
@@ -31,6 +33,13 @@ class AuthController implements ClassHandlerInterface
             case '/logout':
                 $this->deleteSession($_POST['userid']);
                 break;
+            case '/login':
+                $loginView = new LoginView();
+                $loginView->handle();
+                break;
+            case '/register':
+                $registerView = new RegisterView();
+                $registerView->handle();
         }
     }
 
