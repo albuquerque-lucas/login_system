@@ -7,18 +7,21 @@ use LucasAlbuquerque\LoginSystem\Infrastructure\DatabaseConnection;
 use PDO;
 use DateTime;
 use DateTimeZone;
+use LucasAlbuquerque\LoginSystem\Model\Session;
 use LucasAlbuquerque\LoginSystem\View\LoginView;
 use LucasAlbuquerque\LoginSystem\View\RegisterView;
 
 class AuthController implements ClassHandlerInterface
 {
     private \PDO $connection;
+    private $sessionModel;
     private string $redirectHome;
     private string $redirectLogin;
 
     public function __construct()
     {
         $this->connection = DatabaseConnection::connect();
+        $this->sessionModel = new Session();
         $this->redirectHome =  'Location: /home';
         $this->redirectLogin = 'Location: /login';
     }
@@ -31,7 +34,7 @@ class AuthController implements ClassHandlerInterface
                 $this->authenticate();
                 break;
             case '/logout':
-                $this->deleteSession($_POST['userid']);
+                $this->deleteRequest($_POST['userid']);
                 break;
             case '/login':
                 $loginView = new LoginView();
@@ -104,20 +107,11 @@ class AuthController implements ClassHandlerInterface
         session_start();
     }
     if(isset($_COOKIE['sessions_userid']) && isset($_COOKIE['sessions_token']) && isset($_COOKIE['sessions_serial'])){
-        $query = "SELECT * FROM sessions WHERE sessions_userid = :userId AND sessions_token = :token AND sessions_serial = :serial;";
-        $statement = $this->connection->prepare($query);
-
+        
         $id = $_COOKIE['sessions_userid'];
         $token = $_COOKIE['sessions_token'];
         $serial = $_COOKIE['sessions_serial'];
-
-        $statement->bindValue(':userId', $id, PDO::PARAM_INT);
-        $statement->bindValue(':token', $token, PDO::PARAM_INT);
-        $statement->bindValue(':serial', $serial, PDO::PARAM_INT);
-
-        $statement->execute();
-
-        $session = $statement->fetch(PDO::FETCH_ASSOC);
+        $session = $this->sessionModel->findSession($id, $token, $serial);
         if ($session['sessions_id'] > 0) {
             if($session['sessions_userid'] == $_COOKIE['sessions_userid']
             && $session['sessions_token'] == $_COOKIE['sessions_token']
@@ -194,18 +188,10 @@ class AuthController implements ClassHandlerInterface
         header($this->redirectHome);
     }
 
-    public function deleteSession($userId): void
+    public function deleteRequest($userId): void
     {
-        $searchQuery = "SELECT * FROM sessions WHERE sessions_userid = :user_id";
-        $searchStatement = $this->connection->prepare($searchQuery);
-        $searchStatement->bindValue(':user_id', $userId);
-        $searchStatement->execute();
-        $currentSession = $searchStatement->fetch(\PDO::FETCH_ASSOC);
-
-        $deleteQuery = "DELETE FROM sessions WHERE sessions_userid = :user_id;";
-        $statement = $this->connection->prepare($deleteQuery);
-        $statement->bindValue(':user_id', $currentSession['sessions_userid']);
-        $statement->execute();
+        $currentSession = $this->sessionModel->findById($userId);
+        $this->sessionModel->delete($currentSession);
         $this->deleteCookies();
         session_destroy();
         header($this->redirectLogin);
