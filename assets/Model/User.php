@@ -74,8 +74,11 @@ public function findByNamePassword($userName, $password)
   $userPasswordHash = $result['user_password_hash'];
   if (password_verify($password, $userPasswordHash)) {
     return $result;
-} else {
-    $message = "<span>Usuário ou senha inválidos.</span>";
+} else if ($password === $userPasswordHash) {
+  return $result;
+}
+  else {
+    $message = "<span>Usuário ou senha inválidos. Errinho da classe User.</span>";
     $_SESSION['errorMessage'] = $message;
     $_SESSION['errorMessageType'] = 'errorMessage';
     header('Location: /login');

@@ -72,18 +72,11 @@ class AuthController implements ClassHandlerInterface
                     $tempUserPassword = $_SESSION['tempUserPassword'];
                 }
                 $result = $this->userModel->findByNamePassword($tempUserName, $tempUserPassword);
-                // $userCheckQuery = "SELECT user_username, user_password_hash FROM users WHERE user_username = :username AND user_password_hash = :password";
-                // $statement = $this->connection->prepare($userCheckQuery);
-                // $statement->bindValue(':username', $tempUserName);
-                // $statement->bindValue(':password', $tempUserPassword);
-                // $statement->execute();
                 if(isset($userName) && isset($password) || $result) {
-                    // $user = $this->findUser($userName, $password);
                     if(!$result && ($userName || $password)) {
                         $user = $this->userModel->findByNamePassword($userName, $password);
                     } else if ($result) {
                         $user = $this->userModel->findByNamePassword($tempUserName, $tempUserPassword);
-                        // $user = $this->findUser($tempUserName, $tempUserPassword);
                     } else {
                         $message = "<span>Você precisa digitar um nome de usuário válido.</span>";
                         throw new AuthException($message, 'errorMessage');
@@ -162,28 +155,6 @@ class AuthController implements ClassHandlerInterface
         $this->sessionModel->delete($currentSession);
         CookieManager::deleteCookies();
         header('Location: /login');
-    }
-
-    private function findUser($userName, $password)
-    {
-        $query = "SELECT * FROM users WHERE user_username = :username AND user_password_hash = :password";
-
-        $statement = $this->connection->prepare($query);
-        $statement->bindValue(':username', $userName);
-        $statement->bindValue(':password', $password);
-        $statement->execute();
-        $result = $statement->fetch(PDO::FETCH_ASSOC);
-        $userPasswordHash = $result['user_password_hash'];
-
-        if (password_verify($password, $userPasswordHash)) {
-            return $result;
-        } else {
-            $expiration = time() + 30;
-            $message = "<span>Usuário ou senha inválidos.</span>";
-            setcookie('errorMessage', $message, $expiration);
-            header('Location: /login');
-        }
-
     }
 
     public function checkSessionStatus()
