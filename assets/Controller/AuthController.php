@@ -67,17 +67,19 @@ class AuthController implements ClassHandlerInterface
         
         try{
             if(!$this->checkLoginState()){
-                $tempUserName = $_SESSION['tempUserName'];
-                $tempUserPassword = $_SESSION['tempUserPassword'];
+                if (!(isset($userName) && isset($password))) {
+                    $tempUserName = $_SESSION['tempUserName'];
+                    $tempUserPassword = $_SESSION['tempUserPassword'];
+                }
+                $result = $this->userModel->findByNamePassword($tempUserName, $tempUserPassword);
                 // $userCheckQuery = "SELECT user_username, user_password_hash FROM users WHERE user_username = :username AND user_password_hash = :password";
                 // $statement = $this->connection->prepare($userCheckQuery);
                 // $statement->bindValue(':username', $tempUserName);
                 // $statement->bindValue(':password', $tempUserPassword);
                 // $statement->execute();
-                $result = $this->userModel->findByNamePassword($tempUserName, $tempUserPassword);
                 if(isset($userName) && isset($password) || $result) {
+                    // $user = $this->findUser($userName, $password);
                     if(!$result && ($userName || $password)) {
-                        // $user = $this->findUser($userName, $password);
                         $user = $this->userModel->findByNamePassword($userName, $password);
                     } else if ($result) {
                         $user = $this->userModel->findByNamePassword($tempUserName, $tempUserPassword);
@@ -86,7 +88,7 @@ class AuthController implements ClassHandlerInterface
                         $message = "<span>Você precisa digitar um nome de usuário válido.</span>";
                         throw new AuthException($message, 'errorMessage');
                     };
-    
+                    
                     if($user['user_id'] > 0){
                         $this->sessionModel->insert($user['user_id'], $user['user_username']);
                         $message = "<h4>Seja bem vindo, {$user['user_firstname']} {$user['user_lastname']}!</h4>";
