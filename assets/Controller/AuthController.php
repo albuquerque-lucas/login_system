@@ -5,9 +5,8 @@ use LucasAlbuquerque\LoginSystem\Exceptions\AuthException;
 use LucasAlbuquerque\LoginSystem\Handler\ClassHandlerInterface;
 use LucasAlbuquerque\LoginSystem\Infrastructure\DatabaseConnection;
 use PDO;
-use DateTime;
-use DateTimeZone;
 use LucasAlbuquerque\LoginSystem\Model\Session;
+use LucasAlbuquerque\LoginSystem\Utils\SessionManager;
 use LucasAlbuquerque\LoginSystem\View\LoginView;
 use LucasAlbuquerque\LoginSystem\View\RegisterView;
 
@@ -15,15 +14,11 @@ class AuthController implements ClassHandlerInterface
 {
     private \PDO $connection;
     private $sessionModel;
-    private string $redirectHome;
-    private string $redirectLogin;
 
     public function __construct()
     {
         $this->connection = DatabaseConnection::connect();
         $this->sessionModel = new Session();
-        $this->redirectHome =  'Location: /home';
-        $this->redirectLogin = 'Location: /login';
     }
 
     public function handle(): void
@@ -74,10 +69,10 @@ class AuthController implements ClassHandlerInterface
                     };
     
                     if($user['user_id'] > 0){
-                        $this->createRecord($user['user_id'], $user['user_username']);
+                        $this->sessionModel->insert($user['user_id'], $user['user_username']);
                         $message = "<h4>Seja bem vindo, {$user['user_firstname']} {$user['user_lastname']}!</h4>";
                         $_SESSION['welcomeMessage'] = $message;
-                        header($this->redirectHome);
+                        header('Location: /home');
                     } else{
                         $message = "<span>Usuário ou senha inválidos.</span>";
                         throw new AuthException($message, 'errorMessage');
@@ -95,7 +90,7 @@ class AuthController implements ClassHandlerInterface
             $messageType = $exception->getMessageType();
             $_SESSION['errorMessage'] = $message;
             $_SESSION['errorMessageType'] = $messageType;
-            header($this->redirectLogin);
+            header('Location: /login');
         }
 
         
@@ -121,7 +116,12 @@ class AuthController implements ClassHandlerInterface
                     && $session['sessions_serial'] == $_SESSION['sessions_serial']) {
                         return true;
                     } else{
-                        $this->createSession($_COOKIE['user_username'], $_COOKIE['sessions_userid'], $_COOKIE['sessions_token'], $_COOKIE['sessions_serial']);
+                        SessionManager::createSession(
+                            $_COOKIE['user_username'],
+                            $id,
+                            $token,
+                            $serial
+                        );
                         return true;
                     }
             } else {
@@ -135,57 +135,13 @@ class AuthController implements ClassHandlerInterface
     return false;
     }
 
-    private static function createString(int $length): string
-    {
-        $string = "1qaz2wsx3edc4rfv5tgb6yhn7ujm8ik9ol0pQAZWSXEDCRFVTGBYHNUJMIKOLP";
-        return substr(str_shuffle($string), 0, $length);
-    }
-
-    private function createRecord($userId, $userName): void
-    {
-        $query = "INSERT INTO sessions (sessions_userid, sessions_token, sessions_serial, sessions_datetime) VALUES (:userid, :token, :serial, :date)";
-        $token = self::createString(32);
-        $serial = self::createString(32);
-        
-        $this->createCoockie($userName, $userId, $token, $serial);
-        $this->createSession($userName, $userId, $token, $serial);
-
-        $statement = $this->connection->prepare($query);
-        $statement->bindValue(':userid', $userId);
-        $statement->bindValue(':token', $token);
-        $statement->bindValue(':serial', $serial);
-        $statement->bindValue(':date', $this->getDateTime());
-        $statement->execute();
-    }
-
-
-
-    private function createCoockie($userName, $userId, $token, $serial): void
-    {
-            setcookie('sessions_userid', $userId, time() + 3600, "/");
-            setcookie('sessions_username', $userName, time() + 3600, "/");
-            setcookie('sessions_token', $token, time() + 3600, "/");
-            setcookie('sessions_serial', $serial, time() + 3600, "/");
-    }
-
-    private function createSession($userName, $userId, $token, $serial): void
-    {
-        if(!isset($_SESSION)){
-            session_start();
-        }
-            $_SESSION['sessions_username'] = $userName;
-            $_SESSION['sessions_id'] = $userId;
-            $_SESSION['sessions_token'] = $token;
-            $_SESSION['sessions_serial'] = $serial;
-    }
-
     private function deleteCookies(): void
     {
         setcookie('sessions_userid', '', time() - 1, "/");
         setcookie('sessions_username', '', time() - 1, "/");
         setcookie('sessions_token', '', time() - 1, "/");
         setcookie('sessions_serial', '', time() - 1, "/");
-        header($this->redirectHome);
+        header('Location: /home');
     }
 
     public function deleteRequest($userId): void
@@ -193,8 +149,7 @@ class AuthController implements ClassHandlerInterface
         $currentSession = $this->sessionModel->findById($userId);
         $this->sessionModel->delete($currentSession);
         $this->deleteCookies();
-        session_destroy();
-        header($this->redirectLogin);
+        header('Location: /login');
     }
 
     private function findUser($userName, $password): array
@@ -214,7 +169,7 @@ class AuthController implements ClassHandlerInterface
             $expiration = time() + 30;
             $message = "<span>Usuário ou senha inválidos.</span>";
             setcookie('errorMessage', $message, $expiration);
-            header($this->redirectLogin);
+            header('Location: /login');
         }
 
     }
@@ -237,13 +192,5 @@ class AuthController implements ClassHandlerInterface
         }
 
         return [$status, $user];
-    }
-
-    private function getDateTime()
-    {
-        $now = new DateTime('now');
-        $now->setTimezone(new DateTimeZone('America/Sao_Paulo'));
-        $dateTime = $now->format('Y-m-d H:i:s');
-        return $dateTime;
     }
 }
