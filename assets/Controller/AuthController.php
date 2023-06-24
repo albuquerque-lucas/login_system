@@ -6,6 +6,7 @@ use LucasAlbuquerque\LoginSystem\Handler\ClassHandlerInterface;
 use LucasAlbuquerque\LoginSystem\Infrastructure\DatabaseConnection;
 use PDO;
 use LucasAlbuquerque\LoginSystem\Model\Session;
+use LucasAlbuquerque\LoginSystem\Utils\CookieManager;
 use LucasAlbuquerque\LoginSystem\Utils\SessionManager;
 use LucasAlbuquerque\LoginSystem\View\LoginView;
 use LucasAlbuquerque\LoginSystem\View\RegisterView;
@@ -135,20 +136,11 @@ class AuthController implements ClassHandlerInterface
     return false;
     }
 
-    private function deleteCookies(): void
-    {
-        setcookie('sessions_userid', '', time() - 1, "/");
-        setcookie('sessions_username', '', time() - 1, "/");
-        setcookie('sessions_token', '', time() - 1, "/");
-        setcookie('sessions_serial', '', time() - 1, "/");
-        header('Location: /home');
-    }
-
     public function deleteRequest($userId): void
     {
         $currentSession = $this->sessionModel->findById($userId);
         $this->sessionModel->delete($currentSession);
-        $this->deleteCookies();
+        CookieManager::deleteCookies();
         header('Location: /login');
     }
 
