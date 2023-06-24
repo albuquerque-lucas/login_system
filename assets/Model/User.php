@@ -85,6 +85,15 @@ public function findByNamePassword($userName, $password)
 }
 }
 
+public function findUserSession($id)
+{
+  $querySelectSession = "SELECT u.* FROM users u JOIN sessions s ON u.user_id = :id";
+  $statement = $this->connection->prepare($querySelectSession);
+  $statement->bindValue(':id', $id);
+  $statement->execute();
+  return $statement->fetch(PDO::FETCH_ASSOC);
+}
+
 public function sanitizeString($string)
 {
     $filteredString = ucfirst(strtolower(trim($string)));

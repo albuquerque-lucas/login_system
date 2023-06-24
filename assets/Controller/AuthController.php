@@ -3,8 +3,6 @@
 namespace LucasAlbuquerque\LoginSystem\Controller;
 use LucasAlbuquerque\LoginSystem\Exceptions\AuthException;
 use LucasAlbuquerque\LoginSystem\Handler\ClassHandlerInterface;
-use LucasAlbuquerque\LoginSystem\Infrastructure\DatabaseConnection;
-use PDO;
 use LucasAlbuquerque\LoginSystem\Model\Session;
 use LucasAlbuquerque\LoginSystem\Model\User;
 use LucasAlbuquerque\LoginSystem\Utils\CookieManager;
@@ -14,13 +12,11 @@ use LucasAlbuquerque\LoginSystem\View\RegisterView;
 
 class AuthController implements ClassHandlerInterface
 {
-    private \PDO $connection;
     private $sessionModel;
     private $userModel;
 
     public function __construct()
     {
-        $this->connection = DatabaseConnection::connect();
         $this->sessionModel = new Session();
         $this->userModel = new User();
     }
@@ -164,13 +160,9 @@ class AuthController implements ClassHandlerInterface
         if(!$result){
             return false;
         } else {
-            $sessionsUserId = $result['sessions_userid'];
-            $userNameQuery = "SELECT u.* FROM users u JOIN sessions s ON u.user_id = $sessionsUserId";
-            $userNameStatement = $this->connection->prepare($userNameQuery);
-            $userNameStatement->execute();
-            $user = $userNameStatement->fetch(PDO::FETCH_ASSOC);
+            $userId = $result['sessions_userid'];
+            $user = $this->userModel->findUserSession($userId);
         }
-
         return [$status, $user];
     }
 }
