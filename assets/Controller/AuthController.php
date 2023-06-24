@@ -6,6 +6,7 @@ use LucasAlbuquerque\LoginSystem\Handler\ClassHandlerInterface;
 use LucasAlbuquerque\LoginSystem\Infrastructure\DatabaseConnection;
 use PDO;
 use LucasAlbuquerque\LoginSystem\Model\Session;
+use LucasAlbuquerque\LoginSystem\Model\User;
 use LucasAlbuquerque\LoginSystem\Utils\CookieManager;
 use LucasAlbuquerque\LoginSystem\Utils\SessionManager;
 use LucasAlbuquerque\LoginSystem\View\LoginView;
@@ -15,11 +16,13 @@ class AuthController implements ClassHandlerInterface
 {
     private \PDO $connection;
     private $sessionModel;
+    private $userModel;
 
     public function __construct()
     {
         $this->connection = DatabaseConnection::connect();
         $this->sessionModel = new Session();
+        $this->userModel = new User();
     }
 
     public function handle(): void
@@ -39,31 +42,46 @@ class AuthController implements ClassHandlerInterface
             case '/register':
                 $registerView = new RegisterView();
                 $registerView->handle();
+                break;
+            case '/create-user':
+                $this->createUserRequest();
+                break;
         }
+    }
+
+    private function createUserRequest()
+    {
+        $userName = filter_input(INPUT_POST,'username', FILTER_DEFAULT);
+        $userMail = filter_input(INPUT_POST,'email', FILTER_DEFAULT);
+        $userPassword = filter_input(INPUT_POST,'password', FILTER_DEFAULT);
+        $userFirstName = filter_input(INPUT_POST, 'firstname', FILTER_DEFAULT);
+        $userLastName = filter_input(INPUT_POST, 'lastname', FILTER_DEFAULT);
+        $passwordHash = password_hash($userPassword, PASSWORD_ARGON2ID);
+        $this->userModel->create($userName, $userMail, $passwordHash, $userFirstName, $userLastName);
     }
 
     private function authenticate(): void
     {
         $userName = filter_input(INPUT_POST, 'username', FILTER_UNSAFE_RAW);
         $password = filter_input(INPUT_POST, 'password', FILTER_UNSAFE_RAW);
-
+        
         try{
             if(!$this->checkLoginState()){
                 $tempUserName = $_SESSION['tempUserName'];
                 $tempUserPassword = $_SESSION['tempUserPassword'];
-    
-                $userCheckQuery = "SELECT user_username, user_password FROM users WHERE user_username = :username AND user_password = :password";
-                $statement = $this->connection->prepare($userCheckQuery);
-                $statement->bindValue(':username', $tempUserName);
-                $statement->bindValue(':password', $tempUserPassword);
-                $statement->execute();
-                $result = $statement->fetch(PDO::FETCH_ASSOC);
-    
+                // $userCheckQuery = "SELECT user_username, user_password_hash FROM users WHERE user_username = :username AND user_password_hash = :password";
+                // $statement = $this->connection->prepare($userCheckQuery);
+                // $statement->bindValue(':username', $tempUserName);
+                // $statement->bindValue(':password', $tempUserPassword);
+                // $statement->execute();
+                $result = $this->userModel->findByNamePassword($tempUserName, $tempUserPassword);
                 if(isset($userName) && isset($password) || $result) {
-                    if($userName || $password) {
-                        $user = $this->findUser($userName, $password);
+                    if(!$result && ($userName || $password)) {
+                        // $user = $this->findUser($userName, $password);
+                        $user = $this->userModel->findByNamePassword($userName, $password);
                     } else if ($result) {
-                        $user = $this->findUser($tempUserName, $tempUserPassword);
+                        $user = $this->userModel->findByNamePassword($tempUserName, $tempUserPassword);
+                        // $user = $this->findUser($tempUserName, $tempUserPassword);
                     } else {
                         $message = "<span>Você precisa digitar um nome de usuário válido.</span>";
                         throw new AuthException($message, 'errorMessage');
@@ -144,9 +162,9 @@ class AuthController implements ClassHandlerInterface
         header('Location: /login');
     }
 
-    private function findUser($userName, $password): array
+    private function findUser($userName, $password)
     {
-        $query = "SELECT * FROM users WHERE user_username = :username AND user_password = :password";
+        $query = "SELECT * FROM users WHERE user_username = :username AND user_password_hash = :password";
 
         $statement = $this->connection->prepare($query);
         $statement->bindValue(':username', $userName);
@@ -168,10 +186,7 @@ class AuthController implements ClassHandlerInterface
 
     public function checkSessionStatus()
     {
-        $sessionsQuery = "SELECT * FROM sessions";
-        $statement = $this->connection->prepare($sessionsQuery);
-        $statement->execute();
-        $result = $statement->fetch(PDO::FETCH_ASSOC);
+        $result = $this->sessionModel->getAll();
         $status = $this->checkLoginState();
         if(!$result){
             return false;

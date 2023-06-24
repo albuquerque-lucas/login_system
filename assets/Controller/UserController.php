@@ -4,6 +4,7 @@ namespace LucasAlbuquerque\LoginSystem\Controller;
 
 use LucasAlbuquerque\LoginSystem\Handler\ClassHandlerInterface;
 use LucasAlbuquerque\LoginSystem\Infrastructure\DatabaseConnection;
+use LucasAlbuquerque\LoginSystem\Model\User;
 use PDO;
 
 class UserController implements ClassHandlerInterface
@@ -11,9 +12,11 @@ class UserController implements ClassHandlerInterface
   private \PDO $connection;
   private string $redirectAuth;
   private string $redirectCreate;
+  private $userModel;
   public function __construct()
     {
       $this->connection = DatabaseConnection::connect();
+      $this->userModel = new User();
       $this->redirectAuth = 'Location: /authenticate';
       $this->redirectCreate = 'Location: /register';
     }
@@ -26,7 +29,8 @@ class UserController implements ClassHandlerInterface
       $userFirstName = filter_input(INPUT_POST, 'firstname', FILTER_DEFAULT);
       $userLastName = filter_input(INPUT_POST, 'lastname', FILTER_DEFAULT);
       $passwordHash = password_hash($userPassword, PASSWORD_ARGON2ID);
-      $this->createUser($userName, $userMail, $userPassword, $passwordHash, $userFirstName, $userLastName);
+      // $this->createUser($userName, $userMail, $userPassword, $passwordHash, $userFirstName, $userLastName);
+      $this->userModel->create($userName, $userMail, $passwordHash, $userFirstName, $userLastName);
     }
 
     private function createUser(string $userName, string $userMail, string $userPassword, string $passwordHash, string $userFirstName, string $userLastName)
