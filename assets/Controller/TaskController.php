@@ -34,13 +34,13 @@ class TaskController implements ClassHandlerInterface
                 $this->taskView->handle();
                 break;
             case '/create':
-                $this->createTask();
+                $this->createRequest();
                 break;
             case '/delete':
-                $this->removeTask($_POST['id']);
+                $this->removeRequest($_POST['id']);
                 break;
             case '/update-status':
-                $taskData = filter_input(INPUT_POST, 'status-zero', FILTER_DEFAULT);
+                $taskData = $_POST['status-zero'];
                 $checkboxData = filter_input(INPUT_POST, 'status-checkbox', FILTER_DEFAULT);
                 if ($taskData) {
                     $data = json_decode($taskData, true);
@@ -60,7 +60,7 @@ class TaskController implements ClassHandlerInterface
 
     }
 
-    public function createTask():void
+    public function createRequest():void
     {
 
         $name = filter_input(INPUT_POST, 'task_name', FILTER_DEFAULT);
@@ -89,7 +89,7 @@ class TaskController implements ClassHandlerInterface
         $this->Task->update($taskId, $dataToUpdate);
     }
 
-    public function removeTask(int $id):void
+    public function removeRequest(int $id):void
     {
         $this->Task->delete($id);
         header('Location: /home');
@@ -152,15 +152,5 @@ class TaskController implements ClassHandlerInterface
             break;
             header('Location: /home');
         }
-    }
-
-    public function setTaskTextData($id, $value, $column): void
-    {
-        $allowedColumns = ['task_name', 'task_description'];
-        $query = "UPDATE tasks SET $column = :value WHERE task_id = :id";
-        $statement = $this->connection->prepare($query);
-        $statement->bindValue(':value', $value);
-        $statement->bindValue(':id', $id);
-        $statement->execute();
     }
 }
