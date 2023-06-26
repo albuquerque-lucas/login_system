@@ -16,9 +16,18 @@ class Task
         $this->connection = DatabaseConnection::connect();
     }
 
-    public function getAllTasks()
+    public function getAll()
     {
         $statement = $this->connection->query("SELECT * FROM tasks;");
+        return $statement->fetchAll();
+    }
+
+    public function getById($id)
+    {
+        $querySelect = "SELECT * FROM tasks WHERE task_id = :id";
+        $statement = $this->connection->prepare($querySelect);
+        $statement->bindValue(':id', $id);
+        $statement->execute();
         return $statement->fetchAll();
     }
 
@@ -50,33 +59,19 @@ class Task
         $statement->bindValue(':id', $id, PDO::PARAM_INT);
         $statement->execute();
     }
-
-    public function setStatus(int $id, $statusCode): void
+    
+    public function update($id, $data)
     {
-        $queryUpdate = "UPDATE tasks SET task_status_id = :status WHERE task_id = :id";
+        $formattedColumns = $this->getFormattedUpdateColumns($data);
+        $queryUpdate = "UPDATE tasks SET $formattedColumns WHERE task_id = :id";
+        $statement = $this->connection->prepare($queryUpdate);
+        foreach($data as $key => $value) {
+            $statement->bindValue("$key", $value);
+        }
 
-    }
-
-    public function updateText($id, $column, $value)
-    {
-        $query = "UPDATE tasks SET $column = :value WHERE task_id = :id";
-        $statement = $this->connection->prepare($query);
-        $statement->bindValue(':id', $id);
-        $statement->bindValue(':value', $value);
+        $statement->bindValue(":id", $id);
         $statement->execute();
     }
-    // public function update($id, $data)
-    // {
-    //     $formattedColumns = $this->getFormattedUpdateColumns($data);
-    //     $queryUpdate = "UPDATE tasks SET $formattedColumns WHERE task_id = :id";
-    //     $statement = $this->connection->prepare($queryUpdate);
-    //     foreach($data as $key => $value) {
-    //         $statement->bindValue(":$key", $value);
-    //     }
-
-    //     $statement->bindValue(":id", $id);
-    //     $statement->execute();
-    // }
 
     public function getTaskStatus($taskId)
     {
@@ -104,7 +99,7 @@ class Task
     private function getFormattedUpdateColumns($data)
     {
         $formattedColumns = array_map(function($key) {
-            return "$key = ?";
+            return "$key = :$key";
         }, array_keys($data));
         
         return implode(', ', $formattedColumns);

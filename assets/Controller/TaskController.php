@@ -50,21 +50,10 @@ class TaskController implements ClassHandlerInterface
                 list($taskId, $taskStatus) = $data;
                 $this->setTaskStatus($taskId, $taskStatus);
                 break;
-            case '/update-name-description':
-                $taskData = file_get_contents('php://input');
-                $data = json_decode($taskData, true);
-                $taskId = $data['taskId'];
-                $text = $data['text'];
-                $column = $data['column'];
-                $this->setTaskTextData($taskId, $text, $column);
-                break;
             case '/update-task':
                 $taskData = file_get_contents('php://input');
                 $data = json_decode($taskData, true);
-                $taskId = $data['taskId'];
-                $text = $data['text'];
-                $column = $data['column'];
-                $this->updateRequest($taskId, $column, $text);
+                $this->updateRequest($data);
                 break;
         }
 
@@ -91,9 +80,13 @@ class TaskController implements ClassHandlerInterface
         header('Location: /home');
     }
 
-    public function updateRequest($id, $column, $text)
+    public function updateRequest($data)
     {
-        $this->Task->updateText($id, $column, $text);
+        $taskId = $data['taskId'];
+        $text = $data['text'];
+        $column = $data['column'];
+        $dataToUpdate = [$column => $text];
+        $this->Task->update($taskId, $dataToUpdate);
     }
 
     public function removeTask(int $id):void

@@ -58,6 +58,7 @@ export default class CellEditController {
       if (response.ok) {
         console.log(`UPDATE tasks SET ${data.column} = ${data.text} WHERE task_id = ${taskId}`);
         console.log('Dados enviados com sucesso!');
+        console.log(options.body);
       }
     } catch (error) {
       console.log('Erro ao enviar os dados: ', error);

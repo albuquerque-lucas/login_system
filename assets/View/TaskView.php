@@ -20,7 +20,7 @@ class TaskView implements ClassHandlerInterface
 
     public function handle(): void
     {
-        $tasks = $this->Task->getAllTasks();
+        $tasks = $this->Task->getAll();
         echo $this->renderHtml('views/home.php', [
             'tasks' => $tasks,
             'taskModel' => $this->Task,
