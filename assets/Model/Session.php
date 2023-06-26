@@ -25,7 +25,7 @@ class Session
         return $statement->fetch(PDO::FETCH_ASSOC);
   }
 
-  public function findSession(int $id, string $token, string $serial):array
+  public function findSession(int $id, string $token, string $serial)
   {
     $querySelectAll = "SELECT * FROM sessions WHERE sessions_userid = :userId AND sessions_token = :token AND sessions_serial = :serial;";
     $statement = $this->connection->prepare($querySelectAll);

@@ -17,12 +17,12 @@ class TaskController implements ClassHandlerInterface
 
     private \PDO $connection;
     private TaskView $taskView;
-    private string $redirect;
+    private Task $Task;
 
     public function __construct()
     {
         $this->connection = DatabaseConnection::connect();
-        $this->redirect = 'Location: /home';
+        $this->Task = new Task();
         $this->taskView = new TaskView();
     }
 
@@ -58,6 +58,14 @@ class TaskController implements ClassHandlerInterface
                 $column = $data['column'];
                 $this->setTaskTextData($taskId, $text, $column);
                 break;
+            case '/update-task':
+                $taskData = file_get_contents('php://input');
+                $data = json_decode($taskData, true);
+                $taskId = $data['taskId'];
+                $text = $data['text'];
+                $column = $data['column'];
+                $this->updateRequest($taskId, $column, $text);
+                break;
         }
 
 
@@ -66,44 +74,32 @@ class TaskController implements ClassHandlerInterface
     public function createTask():void
     {
 
-        $taskName = filter_input(INPUT_POST, 'task_name', FILTER_DEFAULT);
-        $taskDescription = filter_input(INPUT_POST, 'task_description', FILTER_DEFAULT);
-        $taskInitialStatus = 0;
-        $taskCreationDate = $this->getDateTime();
-        $taskStatusName = 'Criado';
-        $initialConclusionDate = '---';
-        $initialInitDate = '---';
+        $name = filter_input(INPUT_POST, 'task_name', FILTER_DEFAULT);
+        $description = filter_input(INPUT_POST, 'task_description', FILTER_DEFAULT);
+        $initialStatus = 1;
+        $creationDate = $this->getDateTime();
+        $initDate = '---';
+        $conclusionDate = '---';
+        $this->Task->create(
+        $name,
+        $description,
+        $initialStatus,
+        $creationDate,
+        $initDate,
+        $conclusionDate
+    );
+        header('Location: /home');
+    }
 
-        $task = new Task(
-        0,
-        $taskName,
-        $taskDescription,
-        $taskInitialStatus,
-        $taskStatusName,
-        $taskCreationDate
-        );
-        $task->setConclusionDate($initialConclusionDate);
-        $task->setInitDate($initialInitDate);
-        $query = "INSERT into tasks(task_name, task_description, task_status, task_status_name, task_creation_date, task_init_date, task_conclusion_date)
-        VALUES (:task_name , :task_description, :statusCode, :statusName, :creationDate, :initDate, :conclusionDate)";
-        $statement = $this->connection->prepare($query);
-        $statement->bindValue(':task_name', $task->getName());
-        $statement->bindValue(':task_description', $task->getDescription());
-        $statement->bindValue(':statusCode', $task->getStatus());
-        $statement->bindValue('statusName', $task->getStatusName());
-        $statement->bindValue(':creationDate', $task->getCreationDate());
-        $statement->bindValue(':initDate', $task->getInitDate());
-        $statement->bindValue(':conclusionDate', $task->getConclusionDate());
-        $statement->execute();
-        header($this->redirect);
+    public function updateRequest($id, $column, $text)
+    {
+        $this->Task->updateText($id, $column, $text);
     }
 
     public function removeTask(int $id):void
     {
-        $statement = $this->connection->prepare('DELETE FROM tasks WHERE task_id = :id');
-        $statement->bindValue(':id', $id, PDO::PARAM_INT);
-        $statement->execute();
-        header($this->redirect);
+        $this->Task->delete($id);
+        header('Location: /home');
     }
 
 
@@ -133,7 +129,7 @@ class TaskController implements ClassHandlerInterface
                 $initStatement->bindValue(':initDate', $dateTime);
                 $statement->execute();
                 $initStatement->execute();
-                header($this->redirect);
+                header('Location: /home');
             break;
             case 1:
                 $dateTime = $this->getDateTime();
@@ -146,7 +142,7 @@ class TaskController implements ClassHandlerInterface
                 $finishStatement->bindValue(':conclusionDate', $dateTime);
                 $statement->execute();
                 $finishStatement->execute();
-                header($this->redirect);
+                header('Location: /home');
             break;
             case 2:
                 $dateTime = '---';
@@ -159,9 +155,9 @@ class TaskController implements ClassHandlerInterface
                 $unfinishStatement->bindValue(':conclusionDate', $dateTime);
                 $statement->execute();
                 $unfinishStatement->execute();
-                header($this->redirect);
+                header('Location: /home');
             break;
-            header($this->redirect);
+            header('Location: /home');
         }
     }
 

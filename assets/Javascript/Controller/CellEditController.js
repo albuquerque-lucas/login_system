@@ -30,7 +30,7 @@ export default class CellEditController {
         });
       });
     }
-  }
+  } 
 
   toggleElementVisibility(elementToShow, elementToHide) {
     elementToShow.classList.remove('d-none');
@@ -38,12 +38,14 @@ export default class CellEditController {
   }
 
   async updateTextData(taskId, text, column) {
-    const url = '/update-name-description';
+    // const url = '/update-name-description';
+    const url = '/update-task';
     const data = {
       taskId,
       text,
       column,
     };
+
     const options = {
       method: 'POST',
       headers: {
@@ -54,6 +56,7 @@ export default class CellEditController {
     try {
       const response = await fetch(url, options);
       if (response.ok) {
+        console.log(`UPDATE tasks SET ${data.column} = ${data.text} WHERE task_id = ${taskId}`);
         console.log('Dados enviados com sucesso!');
       }
     } catch (error) {

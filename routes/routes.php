@@ -15,6 +15,7 @@ $routes = [
     '/create-user' => AuthController::class, 
     '/update-status' => TaskController::class,
     '/update-name-description' => TaskController::class,
+    '/update-task' => TaskController::class,
 ];
 
 return $routes;
