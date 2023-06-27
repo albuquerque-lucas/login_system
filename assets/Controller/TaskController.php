@@ -41,6 +41,7 @@ class TaskController implements ClassHandlerInterface
                 break;
             case '/update-task-status':
                 $this->updateStatusRequest($_POST['status-zero']);
+                break;
             case '/update-task':
                 $taskData = file_get_contents('php://input');
                 $data = json_decode($taskData, true);
@@ -54,6 +55,7 @@ class TaskController implements ClassHandlerInterface
     public function updateStatusRequest($id)
     {
         $this->Task->updateStatus($id);
+        $this->Task->updateDateTime($id);
         header('Location: /home');
     }
 
