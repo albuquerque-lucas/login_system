@@ -2,14 +2,12 @@
 
 namespace LucasAlbuquerque\LoginSystem\Controller;
 
-use DateTime;
-use DateTimeZone;
 use LucasAlbuquerque\LoginSystem\Handler\ClassHandlerInterface;
 use LucasAlbuquerque\LoginSystem\Traits\RenderHtmlTrait;
 use LucasAlbuquerque\LoginSystem\Infrastructure\DatabaseConnection;
 use LucasAlbuquerque\LoginSystem\Model\Task;
 use LucasAlbuquerque\LoginSystem\View\TaskView;
-use PDO;
+use LucasAlbuquerque\LoginSystem\Utils\DateTimeManager;
 
 class TaskController implements ClassHandlerInterface
 {
@@ -41,6 +39,7 @@ class TaskController implements ClassHandlerInterface
                 break;
             case '/update-task-status':
                 $this->updateStatusRequest($_POST['status-zero']);
+                break;
             case '/update-task':
                 $taskData = file_get_contents('php://input');
                 $data = json_decode($taskData, true);
@@ -54,6 +53,7 @@ class TaskController implements ClassHandlerInterface
     public function updateStatusRequest($id)
     {
         $this->Task->updateStatus($id);
+        $this->Task->updateDateTime($id);
         header('Location: /home');
     }
 
@@ -63,7 +63,7 @@ class TaskController implements ClassHandlerInterface
         $name = filter_input(INPUT_POST, 'task_name', FILTER_DEFAULT);
         $description = filter_input(INPUT_POST, 'task_description', FILTER_DEFAULT);
         $initialStatus = 1;
-        $creationDate = $this->getDateTime();
+        $creationDate = DateTimeManager::getDateTime();
         $initDate = '---';
         $conclusionDate = '---';
         $this->Task->create(
@@ -91,14 +91,5 @@ class TaskController implements ClassHandlerInterface
     {
         $this->Task->delete($id);
         header('Location: /home');
-    }
-
-
-    private function getDateTime()
-    {
-        $now = new DateTime('now');
-        $now->setTimezone(new DateTimeZone('America/Sao_Paulo'));
-        $dateTime = $now->format('Y-m-d H:i:s');
-        return $dateTime;
     }
 }

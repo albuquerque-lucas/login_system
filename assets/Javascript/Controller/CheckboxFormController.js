@@ -1,11 +1,15 @@
 export default class CheckboxFormController {
-  // constructor() {
-  //   this.checkboxForm = document.getElementById('checkbox-form');
-  //   this.statusCheckbox = document.getElementById('status-checkbox');
-  //   this.statusCheckbox.addEventListener('change', this.handleSubmit.bind(this));
-  // }
+  constructor() {
+    this.checkboxForms = document.querySelectorAll('.checkbox-form');
+    this.statusCheckboxes = document.querySelectorAll('.status-checkbox');
+    
+    this.statusCheckboxes.forEach((checkbox) => {
+      checkbox.addEventListener('change', this.handleSubmit.bind(this, checkbox));
+    });
+  }
   
-  // handleSubmit() {
-  //   this.checkboxForm.submit();
-  // }
+  handleSubmit(checkbox) {
+    const form = checkbox.closest('.checkbox-form');
+    form.submit();
+  }
 }
