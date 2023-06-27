@@ -62,15 +62,23 @@ class Task
     
     public function update($id, $data)
     {
-        $newStatus = $this->setNewStatus($id);
         $formattedColumns = $this->getFormattedUpdateColumns($data);
         $queryUpdate = "UPDATE tasks SET $formattedColumns WHERE task_id = :id";
         $statement = $this->connection->prepare($queryUpdate);
         foreach($data as $key => $value) {
             $statement->bindValue("$key", $value);
         }
-
         $statement->bindValue(":id", $id);
+        $statement->execute();
+    }
+
+    public function updateStatus($id)
+    {
+        $newStatus = $this->setNewStatus($id);
+        $updateQuery = "UPDATE tasks SET task_status_id = :newStatus WHERE task_id = :id";
+        $statement = $this->connection->prepare($updateQuery);
+        $statement->bindValue(':newStatus', $newStatus);
+        $statement->bindValue(':id', $id);
         $statement->execute();
     }
 
@@ -135,8 +143,7 @@ class Task
         } else if ($result[0]['task_status_id'] === 3) {
             $final = 2;
         }
-        var_dump($final);
-        exit();
+        return $final;
 }
 
 }

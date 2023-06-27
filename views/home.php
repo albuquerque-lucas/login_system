@@ -75,8 +75,8 @@
                             <?php if ($status) { ?>
                                 <td class="align-middle text-center">
                                     <?php if ($task['task_status_id'] === 1) { ?>
-                                        <form action="/update-task" method="post">
-                                            <input type="hidden" name="status-zero" value="<?= htmlspecialchars(json_encode($taskModel->getIdAndStatus($task['task_id']))) ?>">
+                                        <form action="/update-task-status" method="post">
+                                            <input type="hidden" name="status-zero" value="<?= $task['task_id'] ?>">
                                             <button type="submit" id="init-btn" class="btn btn-sm btn-primary rounded">
                                                 Iniciar
                                             </button>

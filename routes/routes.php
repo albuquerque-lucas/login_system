@@ -13,8 +13,7 @@ $routes = [
     '/logout' => AuthController::class,
     '/register' => AuthController::class,
     '/create-user' => AuthController::class, 
-    '/update-status' => TaskController::class,
-    '/update-name-description' => TaskController::class,
+    '/update-task-status' => TaskController::class,
     '/update-task' => TaskController::class,
 ];
 
