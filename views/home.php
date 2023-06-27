@@ -57,7 +57,12 @@
                                     <?= $task['task_name'] ?>
                                 </span>
                                 <form action="/update-task" method="post" class="text-form">
-                                    <input type="text" class="form-control input-hidden d-none" value="<?= $task['task_name'] ?>" data-namecell="task_name">
+                                    <input
+                                    type="text"
+                                    class="form-control input-hidden d-none"
+                                    value="<?= $task['task_name'] ?>"
+                                    data-namecell="task_name"
+                                    >
                                 </form>
                             </td>
                             <td class="input-cell">
@@ -65,7 +70,12 @@
                                     <?= $task['task_description'] ?>
                                 </span>
                                 <form action="/update-task" method="post" class="text-form">
-                                    <input type="text" class="form-control input-hidden d-none" value="<?= $task['task_description'] ?>" data-descriptioncell="task_description">
+                                    <input
+                                    type="text"
+                                    class="form-control input-hidden d-none"
+                                    value="<?= $task['task_description'] ?>"
+                                    data-descriptioncell="task_description"
+                                    >
                                 </form>
                             </td>
                             <td class="text-center"><?= $task['task_creation_date'] ?></td>
@@ -74,21 +84,27 @@
                             <td class="text-center" id="status-name"><?= $taskModel->getTaskStatus($task['task_id']) ?></td>
                             <?php if ($status) { ?>
                                 <td class="align-middle text-center">
-                                    <?php if ($task['task_status_id'] === 1) { ?>
-                                        <form action="/update-task-status" method="post">
-                                            <input type="hidden" name="status-zero" value="<?= $task['task_id'] ?>">
-                                            <button type="submit" id="init-btn" class="btn btn-sm btn-primary rounded">
-                                                Iniciar
-                                            </button>
-                                        </form>
-                                    <?php } else { ?>
-                                        <form action="/update-task-status" method="post" id="checkbox-form">
-                                            <label for="status-checkbox">Concluir:</label>
-                                            <input type="hidden" name="status-checkbox" value="<?=$taskModel->getTaskStatus($task['task_id']); ?>">
-                                            <input id="status-checkbox" name="status-checkbox" type="checkbox" value="<?= htmlentities(json_encode([$task['task_id'], $taskModel->getTaskStatus($task['task_id'])])); ?>" <?= $task['task_status_id'] === 3 ? "checked" : ""; ?>>
-                                        </form>
-                                    <?php } ?>
-                                </td>
+                                <?php if ($task['task_status_id'] === 1) { ?>
+                                    <form action="/update-task-status" method="post" class="checkbox-form">
+                                        <input type="hidden" name="status-zero" value="<?= $task['task_id'] ?>">
+                                        <button type="submit" class="btn btn-sm btn-primary rounded">
+                                            Iniciar
+                                        </button>
+                                    </form>
+                                <?php } else { ?>
+                                    <form action="/update-task-status" method="post" class="checkbox-form">
+                                        <label for="status-checkbox-<?= $task['task_id'] ?>">Concluir:</label>
+                                        <input type="hidden" name="status-zero" value="<?= $task['task_id'] ?>">
+                                        <input
+                                            id="status-checkbox-<?= $task['task_id'] ?>"
+                                            class="status-checkbox"
+                                            name="status-checkbox"
+                                            type="checkbox"
+                                            <?= $task['task_status_id'] === 3 ? "checked" : ""; ?>
+                                        >
+                                    </form>
+                                <?php } ?>
+                            </td>
                                 <td class="align-middle text-center">
                                     <form action="/delete" method="post">
                                         <input type="hidden" name="id" value="<?= $task['task_id'] ?>" class="d-none">
