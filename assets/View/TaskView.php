@@ -5,30 +5,25 @@ namespace LucasAlbuquerque\LoginSystem\View;
 use LucasAlbuquerque\LoginSystem\Handler\ClassHandlerInterface;
 use LucasAlbuquerque\LoginSystem\Traits\RenderHtmlTrait;
 use LucasAlbuquerque\LoginSystem\Infrastructure\DatabaseConnection;
+use LucasAlbuquerque\LoginSystem\Model\Task;
 
 class TaskView implements ClassHandlerInterface
 {
     use RenderHtmlTrait;
 
-    private \PDO $connection;
+    private Task $Task;
 
     public function __construct()
     {
-        $this->connection = DatabaseConnection::connect();
-
+        $this->Task = new Task();
     }
 
     public function handle(): void
     {
-        $tasks = $this->allTasks();
+        $tasks = $this->Task->getAll();
         echo $this->renderHtml('views/home.php', [
-            'tasks' => $tasks
+            'tasks' => $tasks,
+            'taskModel' => $this->Task,
         ]);
-    }
-
-    public function allTasks():array
-    {
-        $statement = $this->connection->query("SELECT * FROM tasks;");
-        return $statement->fetchAll();
     }
 }

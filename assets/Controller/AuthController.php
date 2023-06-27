@@ -14,11 +14,15 @@ class AuthController implements ClassHandlerInterface
 {
     private $sessionModel;
     private $userModel;
+    private $loginView;
+    private $registerView;
 
     public function __construct()
     {
         $this->sessionModel = new Session();
         $this->userModel = new User();
+        $this->loginView = new LoginView();
+        $this->registerView = new RegisterView();
     }
 
     public function handle(): void
@@ -29,15 +33,13 @@ class AuthController implements ClassHandlerInterface
                 $this->authenticate();
                 break;
             case '/logout':
-                $this->deleteRequest($_POST['userid']);
+                $this->deleteRequest();
                 break;
             case '/login':
-                $loginView = new LoginView();
-                $loginView->handle();
+                $this->loginView->handle();
                 break;
             case '/register':
-                $registerView = new RegisterView();
-                $registerView->handle();
+                $this->registerView->handle();
                 break;
             case '/create-user':
                 $this->createUserRequest();
@@ -145,8 +147,9 @@ class AuthController implements ClassHandlerInterface
     return false;
     }
 
-    public function deleteRequest($userId): void
+    public function deleteRequest(): void
     {
+        $userId = filter_input(INPUT_POST, 'userid', FILTER_DEFAULT);
         $currentSession = $this->sessionModel->findById($userId);
         $this->sessionModel->delete($currentSession);
         CookieManager::deleteCookies();
