@@ -5,6 +5,7 @@ namespace LucasAlbuquerque\LoginSystem\Model;
 use LucasAlbuquerque\LoginSystem\Infrastructure\DatabaseConnection;
 use DateTime;
 use DateTimeZone;
+use LucasAlbuquerque\LoginSystem\Utils\DateTimeManager;
 use PDO;
 
 class Task
@@ -89,7 +90,7 @@ class Task
     
         if ($result == 2) {
             $updateQuery = "UPDATE tasks SET task_init_date = :initDate, task_conclusion_date = :conclusionDate WHERE task_id = :id";
-            $newInitDate = $this->getDateTime();
+            $newInitDate = DateTimeManager::getDateTime();
             $newConclusionDate = '---';
     
             $statement = $this->connection->prepare($updateQuery);
@@ -99,7 +100,7 @@ class Task
             $statement->execute();
         } elseif ($result == 3) {
             $updateQuery = "UPDATE tasks SET task_conclusion_date = :conclusionDate WHERE task_id = :id";
-            $newConclusionDate = $this->getDateTime();
+            $newConclusionDate = DateTimeManager::getDateTime();
     
             $statement = $this->connection->prepare($updateQuery);
             $statement->bindValue(':id', $id);
@@ -121,28 +122,6 @@ class Task
         $result = $statement->fetchAll(PDO::FETCH_ASSOC);
     
         return $result[0]['task_status_name'];
-    }
-
-    // public function getIdAndStatus($taskId)
-    // {
-    //     $querySelect = "SELECT task_status_id FROM tasks WHERE task_id = :id";
-    //     $statement = $this->connection->prepare($querySelect);
-    //     $statement->bindValue(':id', $taskId);
-    //     $result = $statement->fetchAll(PDO::FETCH_ASSOC);
-    //     $final = [
-    //         'column' => 'task_status_id',
-    //         'text' => $result[0]['task_status_id'],
-    //         'taskId' => $taskId,
-    //     ];
-    //     return json_encode($final);
-    // }
-
-    private function getDateTime()
-    {
-        $now = new DateTime('now');
-        $now->setTimezone(new DateTimeZone('America/Sao_Paulo'));
-        $dateTime = $now->format('Y-m-d H:i:s');
-        return $dateTime;
     }
 
     private function getFormattedUpdateColumns($data)
