@@ -62,6 +62,7 @@ class Task
     
     public function update($id, $data)
     {
+        $newStatus = $this->setNewStatus($id);
         $formattedColumns = $this->getFormattedUpdateColumns($data);
         $queryUpdate = "UPDATE tasks SET $formattedColumns WHERE task_id = :id";
         $statement = $this->connection->prepare($queryUpdate);
@@ -88,6 +89,20 @@ class Task
         return $result[0]['task_status_name'];
     }
 
+    public function getIdAndStatus($taskId)
+    {
+        $querySelect = "SELECT task_status_id FROM tasks WHERE task_id = :id";
+        $statement = $this->connection->prepare($querySelect);
+        $statement->bindValue(':id', $taskId);
+        $result = $statement->fetchAll(PDO::FETCH_ASSOC);
+        $final = [
+            'column' => 'task_status_id',
+            'text' => $result[0]['task_status_id'],
+            'taskId' => $taskId,
+        ];
+        return json_encode($final);
+    }
+
     private function getDateTime()
     {
         $now = new DateTime('now');
@@ -104,5 +119,24 @@ class Task
         
         return implode(', ', $formattedColumns);
     }
+
+    public function setNewStatus($taskId)
+    {
+        $querySelect = "SELECT task_status_id FROM tasks WHERE task_id = :id";
+        $statement = $this->connection->prepare($querySelect);
+        $statement->bindValue(':id', $taskId);
+        $statement->execute();
+        $result = $statement->fetchAll(PDO::FETCH_ASSOC);
+        $final = null;
+        if ($result[0]['task_status_id'] === 1){
+            $final = 2;
+        } else if ($result[0]['task_status_id'] === 2) {
+            $final = 3;
+        } else if ($result[0]['task_status_id'] === 3) {
+            $final = 2;
+        }
+        var_dump($final);
+        exit();
+}
 
 }

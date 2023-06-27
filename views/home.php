@@ -75,16 +75,16 @@
                             <?php if ($status) { ?>
                                 <td class="align-middle text-center">
                                     <?php if ($task['task_status_id'] === 1) { ?>
-                                        <form action="/update-status" method="post">
-                                            <input type="hidden" name="status-zero" value="<?= htmlentities(json_encode([$task['task_id'], $taskModel->getTaskStatus($task['task_id'])])); ?>">
+                                        <form action="/update-task" method="post">
+                                            <input type="hidden" name="status-zero" value="<?= htmlspecialchars(json_encode($taskModel->getIdAndStatus($task['task_id']))) ?>">
                                             <button type="submit" id="init-btn" class="btn btn-sm btn-primary rounded">
                                                 Iniciar
                                             </button>
                                         </form>
                                     <?php } else { ?>
-                                        <form action="/update-status" method="post" id="checkbox-form">
+                                        <form action="/update-task-status" method="post" id="checkbox-form">
                                             <label for="status-checkbox">Concluir:</label>
-                                            <input type="hidden" name="status-checkbox" value="<?= htmlentities(json_encode([$task['task_id'], $taskModel->getTaskStatus($task['task_id'])])); ?>">
+                                            <input type="hidden" name="status-checkbox" value="<?=$taskModel->getTaskStatus($task['task_id']); ?>">
                                             <input id="status-checkbox" name="status-checkbox" type="checkbox" value="<?= htmlentities(json_encode([$task['task_id'], $taskModel->getTaskStatus($task['task_id'])])); ?>" <?= $task['task_status_id'] === 3 ? "checked" : ""; ?>>
                                         </form>
                                     <?php } ?>

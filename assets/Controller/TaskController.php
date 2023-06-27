@@ -40,24 +40,34 @@ class TaskController implements ClassHandlerInterface
                 $this->removeRequest($_POST['id']);
                 break;
             case '/update-status':
-                $taskData = $_POST['status-zero'];
-                $checkboxData = filter_input(INPUT_POST, 'status-checkbox', FILTER_DEFAULT);
-                if ($taskData) {
-                    $data = json_decode($taskData, true);
-                } else if ($checkboxData) {
-                    $data = json_decode($checkboxData, true);
-                }
-                list($taskId, $taskStatus) = $data;
-                $this->setTaskStatus($taskId, $taskStatus);
-                break;
+                // $taskData = $_POST['status-zero'];
+                // $checkboxData = filter_input(INPUT_POST, 'status-checkbox', FILTER_DEFAULT);
+                // if ($taskData) {
+                //     $data = json_decode($taskData, true);
+                // } else if ($checkboxData) {
+                //     $data = json_decode($checkboxData, true);
+                // }
+                // list($taskId, $taskStatus) = $data;
+                // $this->setTaskStatus($taskId, $taskStatus);
+                // break;
             case '/update-task':
-                $taskData = file_get_contents('php://input');
+                if(!isset($_POST['status-zero'])){
+                    $taskData = file_get_contents('php://input');
+                } else {
+                    $statusData = $_POST['status-zero'];
+                    $taskData = json_decode($statusData);
+                }
                 $data = json_decode($taskData, true);
                 $this->updateRequest($data);
                 break;
         }
 
 
+    }
+
+    public function updateStatusRequest()
+    {
+        
     }
 
     public function createRequest():void
@@ -82,10 +92,13 @@ class TaskController implements ClassHandlerInterface
 
     public function updateRequest($data)
     {
+
         $taskId = $data['taskId'];
         $text = $data['text'];
         $column = $data['column'];
         $dataToUpdate = [$column => $text];
+        var_dump($text);
+        exit();
         $this->Task->update($taskId, $dataToUpdate);
     }
 
