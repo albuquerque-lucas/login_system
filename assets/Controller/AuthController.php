@@ -64,7 +64,7 @@ class AuthController implements ClassHandlerInterface
         $password = filter_input(INPUT_POST, 'password', FILTER_UNSAFE_RAW);
         
         try{
-            if(!$this->checkLoginState()){
+            if(!SessionManager::verifySessionState()){
                 if (!(isset($userName) && isset($password))) {
                     $tempUserName = $_SESSION['tempUserName'];
                     $tempUserPassword = $_SESSION['tempUserPassword'];
@@ -108,45 +108,6 @@ class AuthController implements ClassHandlerInterface
         
     }
 
-    private function checkLoginState(): bool
-    {
-    if(!isset($_SESSION)){
-        session_start();
-    }
-    if(isset($_COOKIE['sessions_userid']) && isset($_COOKIE['sessions_token']) && isset($_COOKIE['sessions_serial'])){
-        
-        $id = $_COOKIE['sessions_userid'];
-        $token = $_COOKIE['sessions_token'];
-        $serial = $_COOKIE['sessions_serial'];
-        $session = $this->sessionModel->findSession($id, $token, $serial);
-        if ($session['sessions_id'] > 0) {
-            if($session['sessions_userid'] == $_COOKIE['sessions_userid']
-            && $session['sessions_token'] == $_COOKIE['sessions_token']
-            && $session['sessions_serial'] == $_COOKIE['sessions_serial']) {
-                    if($session['sessions_userid'] == $_SESSION['sessions_id']
-                    && $session['sessions_token'] == $_SESSION['sessions_token']
-                    && $session['sessions_serial'] == $_SESSION['sessions_serial']) {
-                        return true;
-                    } else{
-                        SessionManager::createSession(
-                            $_COOKIE['user_username'],
-                            $id,
-                            $token,
-                            $serial
-                        );
-                        return true;
-                    }
-            } else {
-                return false;
-            }
-        } else {
-            return false;
-        }
-        
-    }
-    return false;
-    }
-
     public function deleteRequest(): void
     {
         $userId = filter_input(INPUT_POST, 'userid', FILTER_DEFAULT);
@@ -154,18 +115,5 @@ class AuthController implements ClassHandlerInterface
         $this->sessionModel->delete($currentSession);
         CookieManager::deleteCookies();
         header('Location: /login');
-    }
-
-    public function checkSessionStatus()
-    {
-        $result = $this->sessionModel->getAll();
-        $status = $this->checkLoginState();
-        if(!$result){
-            return false;
-        } else {
-            $userId = $result['sessions_userid'];
-            $user = $this->userModel->findUserSession($userId);
-        }
-        return [$status, $user];
     }
 }

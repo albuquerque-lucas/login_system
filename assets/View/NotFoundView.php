@@ -4,6 +4,7 @@ namespace LucasAlbuquerque\LoginSystem\View;
 
 use LucasAlbuquerque\LoginSystem\Handler\ClassHandlerInterface;
 use LucasAlbuquerque\LoginSystem\Traits\RenderHtmlTrait;
+use LucasAlbuquerque\LoginSystem\Utils\SessionManager;
 
 class NotFoundView implements ClassHandlerInterface
 {
@@ -11,6 +12,11 @@ class NotFoundView implements ClassHandlerInterface
 
     public function handle(): void
     {
-        echo $this->renderHtml('views/notFound.php', []);
+        $sessionInfo = SessionManager::verifySessionInformation();
+        list($status, $user) = $sessionInfo;
+        echo $this->renderHtml('views/notFound.php', [
+            'status' => $status,
+            'user' => $user,
+        ]);
     }
 }

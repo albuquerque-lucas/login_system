@@ -1,7 +1,7 @@
 <?php
 
 
-use LucasAlbuquerque\LoginSystem\Controller\{AuthController, TaskController, UserController};
+use LucasAlbuquerque\LoginSystem\Controller\{AuthController, TaskController};
 
 $routes = [
     '' => TaskController::class,

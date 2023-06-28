@@ -1,10 +1,3 @@
-<?php
-require './vendor/autoload.php';
-use LucasAlbuquerque\LoginSystem\Controller\AuthController;
-$authController = new AuthController();
-$sessionInfo = $authController->checkSessionStatus();
-list($status, $user) = $sessionInfo;
-?>
 <!DOCTYPE html>
 <html lang="en">
 
