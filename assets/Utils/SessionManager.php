@@ -7,14 +7,6 @@ use LucasAlbuquerque\LoginSystem\Model\User;
 
 class SessionManager
 {
-  private Session $Session;
-  private User $User;
-  public function __construct()
-  {
-    $this->Session = new Session();
-    $this->User = new User();
-  }
-
   public static function verifySessionState(): bool
     {
     if(!isset($_SESSION)){
@@ -66,15 +58,17 @@ class SessionManager
       $_SESSION['sessions_serial'] = $serial;
   }
 
-  public function verifySessionInformation()
+  public static function verifySessionInformation()
   {
-      $result = $this->Session->getAll();
+      $newSession = new Session();
+      $newUser = new User();
+      $result = $newSession->getAll();
       $status = self::verifySessionState();
       if(!$result){
           return false;
       } else {
           $userId = $result['sessions_userid'];
-          $user = $this->User->findUserSession($userId);
+          $user = $newUser->findUserSession($userId);
       }
       return [$status, $user];
   }
