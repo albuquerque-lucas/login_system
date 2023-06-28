@@ -64,7 +64,7 @@ class AuthController implements ClassHandlerInterface
         $password = filter_input(INPUT_POST, 'password', FILTER_UNSAFE_RAW);
         
         try{
-            if(!$this->checkLoginState()){
+            if(!$this->verifySessionState()){
                 if (!(isset($userName) && isset($password))) {
                     $tempUserName = $_SESSION['tempUserName'];
                     $tempUserPassword = $_SESSION['tempUserPassword'];
@@ -108,7 +108,7 @@ class AuthController implements ClassHandlerInterface
         
     }
 
-    private function checkLoginState(): bool
+    private function verifySessionState(): bool
     {
     if(!isset($_SESSION)){
         session_start();
@@ -159,7 +159,7 @@ class AuthController implements ClassHandlerInterface
     public function checkSessionStatus()
     {
         $result = $this->sessionModel->getAll();
-        $status = $this->checkLoginState();
+        $status = $this->verifySessionState();
         if(!$result){
             return false;
         } else {
