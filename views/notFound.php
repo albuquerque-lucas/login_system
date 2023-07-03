@@ -1,4 +1,4 @@
-<?php include './assets/components/header.php'; ?>
+<?php include './views/components/header.php'; ?>
 
 <div class="container d-flex align-items-center justify-content-center" style="height:100vh;">
   <div class="row">
@@ -9,4 +9,4 @@
   </div>
 </div>
 
-<?php include './assets/components/footer.php'; ?>
+<?php include './views/components/footer.php'; ?>

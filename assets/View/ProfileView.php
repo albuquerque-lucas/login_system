@@ -2,11 +2,10 @@
 
 namespace LucasAlbuquerque\LoginSystem\View;
 
-use LucasAlbuquerque\LoginSystem\Handler\ClassHandlerInterface;
 use LucasAlbuquerque\LoginSystem\Traits\RenderHtmlTrait;
 use LucasAlbuquerque\LoginSystem\Utils\SessionManager;
 
-class ProfileView implements ClassHandlerInterface
+class ProfileView
 {
     use RenderHtmlTrait;
 

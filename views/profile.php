@@ -1,5 +1,4 @@
-<?php include './assets/components/header.php';
-?>
+<?php include './views/components/header.php'; ?>
 
 <div class="container d-flex flex-column">
         <h1 class="text-center my-5">Perfil do Usuário</h1>
@@ -46,4 +45,4 @@
               <?php } ?>
     </div>
 
-<?php include './assets/components/footer.php'; ?>
+<?php include './views/components/footer.php'; ?>

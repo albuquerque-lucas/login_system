@@ -2,22 +2,10 @@
 
 <div class="container">
     <h1 class="text-center mt-5">Tarefas</h1>
-    <div id="mensagemView">
-        <?php if (isset($_SESSION['authMessage']) || isset($_SESSION['welcomeMessage'])) { ?>
-            <div class='alert alert-success'>
-                <?= $_SESSION['welcomeMessage']; ?>
-                <?= $_SESSION['authMessage']; ?>
-            </div>
-        <?php
-            unset($_SESSION['welcomeMessage']);
-            unset($_SESSION['authMessage']);
-            unset($_SESSION['messageType']);
-        }
-        ?>
-    </div>
 
-    <?php if ($status) { ?> 
+    <?php if ($status) { ?>
         <form class="form" action="/create" method="post">
+          <input type="hidden" name="task_user_id" value=<?= $user['user_id']?> />
             <div class="form-group">
                 <label for="task_name">Nome</label>
                 <input type="text" id="task_name" name="task_name" class="form-control" required autofocus/>
@@ -49,7 +37,7 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <?php foreach ($tasks as $task) { ?>
+                    <?php foreach ($userTasks as $task) { ?>
 
                         <tr>
                             <td class="input-cell text-center">

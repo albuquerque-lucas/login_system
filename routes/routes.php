@@ -16,6 +16,7 @@ $routes = [
     '/update-task-status' => TaskController::class,
     '/update-task' => TaskController::class,
     '/profile' => ProfileController::class,
+    '/tasks' => TaskController::class,
 ];
 
 return $routes;

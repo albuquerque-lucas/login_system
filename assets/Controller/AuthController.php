@@ -2,7 +2,7 @@
 
 namespace LucasAlbuquerque\LoginSystem\Controller;
 use LucasAlbuquerque\LoginSystem\Exceptions\AuthException;
-use LucasAlbuquerque\LoginSystem\Handler\ClassHandlerInterface;
+use LucasAlbuquerque\LoginSystem\Interface\ClassHandlerInterface;
 use LucasAlbuquerque\LoginSystem\Model\Session;
 use LucasAlbuquerque\LoginSystem\Model\User;
 use LucasAlbuquerque\LoginSystem\Utils\CookieManager;
