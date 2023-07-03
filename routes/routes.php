@@ -1,7 +1,7 @@
 <?php
 
 
-use LucasAlbuquerque\LoginSystem\Controller\{AuthController, TaskController};
+use LucasAlbuquerque\LoginSystem\Controller\{AuthController, ProfileController, TaskController};
 
 $routes = [
     '' => TaskController::class,
@@ -15,6 +15,7 @@ $routes = [
     '/create-user' => AuthController::class, 
     '/update-task-status' => TaskController::class,
     '/update-task' => TaskController::class,
+    '/profile' => ProfileController::class,
 ];
 
 return $routes;

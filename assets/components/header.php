@@ -20,11 +20,15 @@
             </li>
             <?php if ($status) { ?>
                 <li class="nav-item">
+                    <a class="nav-link" href="/profile">Perfil</a>
+                </li>
+                <li class="nav-item">
                     <form action="/logout" method="post">
                         <input type="hidden" name="userid" value="<?= $user['user_id']; ?>">
                         <button class="btn btn-outline-light" type="submit">Logout</button>
                     </form>
                 </li>
+
             <?php } else { ?>
                 <li class="nav-item">
                     <a class="nav-link" href="/register">Sign in</a>
