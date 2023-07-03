@@ -84,7 +84,7 @@ class AuthController implements ClassHandlerInterface
                         $this->sessionModel->insert($user['user_id'], $user['user_username']);
                         $message = "<h4>Seja bem vindo, {$user['user_fullname']}!</h4>";
                         $_SESSION['welcomeMessage'] = $message;
-                        header('Location: /home');
+                        header('Location: /profile');
                     } else{
                         $message = "<span>Usuário ou senha inválidos.</span>";
                         throw new AuthException($message, 'errorMessage');
