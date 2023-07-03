@@ -1,13 +1,15 @@
 <?php include './assets/components/header.php';
 ?>
 
-<div class="container">
+<div class="container d-flex flex-column">
         <h1 class="text-center my-5">Perfil do Usuário</h1>
-        <div class="row">
-            <div class="col-md-6 offset-md-3">
-                <div class="card">
+        <div class="general my-1">
+          <h3 class="text-center">Conteúdo geral</h3>
+        </div>
+            <div class="d-flex justify-content-between my-5">
+                <div class="card w-50 mx-5">
                     <div class="card-body">
-                        <h4 class="card-title center">Informações</h4>
+                        <h4 class="card-title">Informações</h4>
                         <div class="form-group">
                             <label for="user-name">Nome:</label>
                             <input type="text" class="form-control" id="user-name" value="<?= $user['user_fullname']?>" readonly>
@@ -17,17 +19,29 @@
                             <input type="text" class="form-control" id="user-username" value="<?= $user['user_username']?>" readonly>
                         </div>
                         <div class="form-group">
-                            <label for="email">Email:</label>
-                            <input type="email" class="form-control" id="email" value="<?= $user['user_email']?>" readonly>
+                            <label for="user-email">Email:</label>
+                            <input type="email" class="form-control" id="user-email" value="<?= $user['user_email']?>" readonly>
                         </div>
                         <div class="form-group">
-                            <label for="nivel">Nível de Acesso:</label>
-                            <input type="text" class="form-control" id="nivel" value="<?= $userAccess['access_level_name']?>" readonly>
+                            <label for="user-access">Nível de Acesso:</label>
+                            <input type="text" class="form-control" id="user-access" value="<?= $userAccess['access_level_name']?>" readonly>
                         </div>
+                      </div>
                     </div>
-                </div>
+                    <div class="card w-50 mx-5 d-flex justify-content-center align-items-center">
+                      <img src="../assets/images/no-image.jpg" alt="Imagem de perfildo usuário" class="h-100 w-75">
+                    </div>
             </div>
-        </div>
+            <div class="users-count-data">
+              <?php
+                include './views/components/totalUsersData.php';
+              ?>
+            </div>
+            <div class="users-list">
+              <?php
+                include './views/components/usersList.php';
+              ?>
+            </div>
     </div>
 
 <?php include './assets/components/footer.php'; ?>

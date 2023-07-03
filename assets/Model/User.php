@@ -13,6 +13,15 @@ class User
     $this->connection = DatabaseConnection::connect();
   }
 
+  public function getAll()
+  {
+    $querySelect = "SELECT * FROM users";
+    $statement = $this->connection->prepare($querySelect);
+    $statement->execute();
+    $result = $statement->fetchAll(PDO::FETCH_ASSOC);
+    return $result;
+  }
+
   public function create(
   $userName, 
   $userMail,
@@ -106,6 +115,23 @@ public function getUserAccess($id)
 
 $statement = $this->connection->prepare($querySelect);
 $statement->bindValue(':id', $id);
+$statement->execute();
+
+$result = $statement->fetch(PDO::FETCH_ASSOC);
+return $result;
+}
+
+public function getUserManagementData()
+{
+  $query = "SELECT COUNT(*) AS users_total_count,
+  SUM(CASE WHEN al.access_level_name = 'Basic' THEN 1 ELSE 0 END) AS users_basic,
+  SUM(CASE WHEN al.access_level_name = 'Reviewer' THEN 1 ELSE 0 END) AS users_reviewer,
+  SUM(CASE WHEN al.access_level_name = 'Administrator' THEN 1 ELSE 0 END) AS users_administrator,
+  SUM(CASE WHEN al.access_level_name = 'Chief Administrator' THEN 1 ELSE 0 END) AS users_chief_administrator
+FROM users u
+JOIN access_levels al ON u.user_access_level_id = al.access_level_id";
+
+$statement = $this->connection->prepare($query);
 $statement->execute();
 
 $result = $statement->fetch(PDO::FETCH_ASSOC);

@@ -1,3 +1,8 @@
+<?php
+// use LucasAlbuquerque\LoginSystem\Model\User;
+// $user = new User();
+// $user->getUserManagementData();
+?>
 <!DOCTYPE html>
 <html lang="en">
 
