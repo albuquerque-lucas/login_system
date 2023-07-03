@@ -2,7 +2,7 @@
 
 namespace LucasAlbuquerque\LoginSystem\Controller;
 
-use LucasAlbuquerque\LoginSystem\Handler\ClassHandlerInterface;
+use LucasAlbuquerque\LoginSystem\Interface\ClassHandlerInterface;
 use LucasAlbuquerque\LoginSystem\View\ProfileView;
 use PDO;
 

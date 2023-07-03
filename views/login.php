@@ -1,4 +1,4 @@
-<?php include './assets/components/header.php'; ?>
+<?php include './views/components/header.php'; ?>
 
 <div class="mt-5" style="height:15vh;">
     <?php
@@ -31,4 +31,4 @@
     </form>
 </div>
 
-<?php include './assets/components/footer.php'; ?>
+<?php include './views/components/footer.php'; ?>

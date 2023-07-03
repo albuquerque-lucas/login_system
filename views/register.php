@@ -1,6 +1,4 @@
-<?php
-include './assets/components/header.php'
-?>
+<?php include './views/components/header.php'; ?>
 
     <?php
     if (isset($_COOKIE['errorMessage'])) {
@@ -40,6 +38,4 @@ include './assets/components/header.php'
         </form>
     </div>
 
-<?php
-include './assets/components/footer.php'
-?>
+    <?php include './views/components/footer.php'; ?>

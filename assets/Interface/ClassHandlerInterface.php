@@ -1,6 +1,6 @@
 <?php
 
-namespace LucasAlbuquerque\LoginSystem\Handler;
+namespace LucasAlbuquerque\LoginSystem\Interface;
 
 interface ClassHandlerInterface
 {

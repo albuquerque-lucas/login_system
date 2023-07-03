@@ -2,7 +2,7 @@
 
 namespace LucasAlbuquerque\LoginSystem\Controller;
 
-use LucasAlbuquerque\LoginSystem\Handler\ClassHandlerInterface;
+use LucasAlbuquerque\LoginSystem\Interface\ClassHandlerInterface;
 use LucasAlbuquerque\LoginSystem\Traits\RenderHtmlTrait;
 use LucasAlbuquerque\LoginSystem\Infrastructure\DatabaseConnection;
 use LucasAlbuquerque\LoginSystem\Model\Task;
@@ -29,7 +29,10 @@ class TaskController implements ClassHandlerInterface
         switch ($_SERVER['PATH_INFO']){
             case '':
             case '/home':
-                $this->taskView->handle();
+                $this->taskView->renderHomePage();
+                break;
+            case '/tasks':
+                $this->taskView->renderTaskPage();
                 break;
             case '/create': 
                 $this->createRequest();
@@ -54,7 +57,7 @@ class TaskController implements ClassHandlerInterface
     {
         $this->Task->updateStatus($id);
         $this->Task->updateDateTime($id);
-        header('Location: /home');
+        header('Location: /tasks');
     }
 
     public function createRequest():void
@@ -62,6 +65,7 @@ class TaskController implements ClassHandlerInterface
 
         $name = filter_input(INPUT_POST, 'task_name', FILTER_DEFAULT);
         $description = filter_input(INPUT_POST, 'task_description', FILTER_DEFAULT);
+        $userId = filter_input(INPUT_POST, 'task_user_id', FILTER_DEFAULT);
         $initialStatus = 1;
         $creationDate = DateTimeManager::getDateTime();
         $initDate = '---';
@@ -72,9 +76,10 @@ class TaskController implements ClassHandlerInterface
         $initialStatus,
         $creationDate,
         $initDate,
-        $conclusionDate
+        $conclusionDate,
+        $userId
     );
-        header('Location: /home');
+        header('Location: /tasks');
     }
 
     public function updateRequest($data)
@@ -90,6 +95,6 @@ class TaskController implements ClassHandlerInterface
     public function removeRequest(int $id):void
     {
         $this->Task->delete($id);
-        header('Location: /home');
+        header('Location: /tasks');
     }
 }

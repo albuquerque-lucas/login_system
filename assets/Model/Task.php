@@ -3,8 +3,6 @@
 namespace LucasAlbuquerque\LoginSystem\Model;
 
 use LucasAlbuquerque\LoginSystem\Infrastructure\DatabaseConnection;
-use DateTime;
-use DateTimeZone;
 use LucasAlbuquerque\LoginSystem\Utils\DateTimeManager;
 use PDO;
 
@@ -38,11 +36,12 @@ class Task
     $initStatus,
     $creationDate,
     $initDate,
-    $conclusionDate
+    $conclusionDate,
+    $userId
     )
     {
-        $queryInsert = "INSERT into tasks(task_name, task_description, task_creation_date, task_init_date, task_conclusion_date, task_status_id)
-        VALUES (:task_name , :task_description, :creationDate, :initDate, :conclusionDate, :statusCode)";
+        $queryInsert = "INSERT into tasks(task_name, task_description, task_creation_date, task_init_date, task_conclusion_date, task_status_id, task_user_id)
+        VALUES (:task_name , :task_description, :creationDate, :initDate, :conclusionDate, :statusCode, :userid)";
         $statement = $this->connection->prepare($queryInsert);
         $statement->bindValue(':task_name', $name);
         $statement->bindValue(':task_description', $description);
@@ -50,6 +49,7 @@ class Task
         $statement->bindValue(':initDate', $initDate);
         $statement->bindValue(':conclusionDate', $conclusionDate);
         $statement->bindValue(':statusCode', $initStatus);
+        $statement->bindValue(':userid', $userId);
         $statement->execute();
     }
 
