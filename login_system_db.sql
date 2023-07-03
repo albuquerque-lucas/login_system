@@ -18,6 +18,20 @@ USE `login_system`;
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
 
 --
+-- Table structure for table `access_levels`
+--
+
+DROP TABLE IF EXISTS `access_levels`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `access_levels` (
+  `access_level_id` int NOT NULL AUTO_INCREMENT,
+  `access_level_name` varchar(100) DEFAULT NULL,
+  PRIMARY KEY (`access_level_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
 -- Table structure for table `sessions`
 --
 
@@ -63,8 +77,11 @@ CREATE TABLE `tasks` (
   `task_init_date` varchar(19) DEFAULT NULL,
   `task_conclusion_date` varchar(19) DEFAULT NULL,
   `task_status_id` int DEFAULT NULL,
+  `task_user_id` int DEFAULT NULL,
   PRIMARY KEY (`task_id`),
   KEY `task_status_id` (`task_status_id`),
+  KEY `fk_task_user` (`task_user_id`),
+  CONSTRAINT `fk_task_user` FOREIGN KEY (`task_user_id`) REFERENCES `users` (`user_id`),
   CONSTRAINT `tasks_ibfk_1` FOREIGN KEY (`task_status_id`) REFERENCES `task_status` (`task_status_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -73,7 +90,7 @@ CREATE TABLE `tasks` (
 -- Table structure for table `users`
 --
 
-DROP TABLE IF EXISTS `users`; 
+DROP TABLE IF EXISTS `users`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `users` (
@@ -81,9 +98,10 @@ CREATE TABLE `users` (
   `user_username` varchar(45) DEFAULT NULL,
   `user_firstname` varchar(45) DEFAULT NULL,
   `user_lastname` varchar(45) DEFAULT NULL,
+  `user_fullname` varchar(100) DEFAULT NULL,
   `user_email` varchar(45) DEFAULT NULL,
   `user_password_hash` varchar(500) DEFAULT NULL,
-  `user_status` int DEFAULT NULL,
+  `user_access_level_id` int DEFAULT NULL,
   PRIMARY KEY (`user_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -97,4 +115,4 @@ CREATE TABLE `users` (
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2023-06-28 22:07:17
+-- Dump completed on 2023-07-03 13:05:39

@@ -15,7 +15,14 @@
         }
         ?>
     </div>
-
+    <section>
+        <div class="text"></div>
+        <div class="image"></div>
+    </section>
+    <section>
+        <div class="image"></div>
+        <div class="text"></div>
+    </section>
     
 </div>
 
