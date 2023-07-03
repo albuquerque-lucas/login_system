@@ -57,7 +57,7 @@ class TaskController implements ClassHandlerInterface
     {
         $this->Task->updateStatus($id);
         $this->Task->updateDateTime($id);
-        header('Location: /home');
+        header('Location: /tasks');
     }
 
     public function createRequest():void
@@ -79,7 +79,7 @@ class TaskController implements ClassHandlerInterface
         $conclusionDate,
         $userId
     );
-        header('Location: /home');
+        header('Location: /tasks');
     }
 
     public function updateRequest($data)
@@ -95,6 +95,6 @@ class TaskController implements ClassHandlerInterface
     public function removeRequest(int $id):void
     {
         $this->Task->delete($id);
-        header('Location: /home');
+        header('Location: /tasks');
     }
 }
