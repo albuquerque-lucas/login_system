@@ -13,12 +13,13 @@ class ProfileView implements ClassHandlerInterface
     public function handle(): void
     {
         $sessionInfo = SessionManager::verifySessionInformation();
-        list($status, $user, $userAccess, $managementData) = $sessionInfo;
+        list($status, $user, $userAccess, $managementData, $allUsers) = $sessionInfo;
         echo $this->renderHtml('views/profile.php', [
             'status' => $status,
             'user' => $user,
             'userAccess' => $userAccess,
             'managementData' => $managementData,
+            'allUsers' => $allUsers,
         ]);
     }
 }

@@ -37,11 +37,13 @@
                 include './views/components/totalUsersData.php';
               ?>
             </div>
-            <div class="users-list">
-              <?php
-                include './views/components/usersList.php';
-              ?>
-            </div>
+            <?php if ($user['user_access_level_id'] > 3) { ?>
+              <div class="users-list">
+                <?php
+                  include './views/components/usersList.php';
+                ?>
+              </div>
+              <?php } ?>
     </div>
 
 <?php include './assets/components/footer.php'; ?>

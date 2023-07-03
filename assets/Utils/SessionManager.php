@@ -71,7 +71,8 @@ class SessionManager
             $user = $newUser->findUserSession($userId);
             $userAccess = $newUser->getUserAccess($userId);
             $managementData = $newUser->getUserManagementData();
+            $allUsers = $newUser->getAll();
         }
-        return [$status, $user, $userAccess, $managementData];
+        return [$status, $user, $userAccess, $managementData, $allUsers];
     }
 }
