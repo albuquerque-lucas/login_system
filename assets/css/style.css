@@ -60,7 +60,7 @@
 .second-text .image img,
 .third-text .image img {
   max-height: 100%;
-  max-width: 80%;
+  max-width: 81%;
   -o-object-fit: cover;
      object-fit: cover;
 }
