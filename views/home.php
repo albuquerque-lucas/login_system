@@ -53,7 +53,7 @@
         <section class='section-text second-text'>
             <div class="text">
                 <h4>
-                    Método VerifiSessionState:
+                    Método VerifySessionState:
                 </h4>
                 <p>Verifica se o usuário está logado e retorna um booleano.</p>
                 <ol>
