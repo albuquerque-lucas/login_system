@@ -10,9 +10,9 @@ class DatabaseConnection
     public static function connect()
     {
         $hostName = 'localhost';
-        $dbName = 'login_system';
-        $userName = 'root';
-        $password = 'mamao123mamao';
+        $dbName = 'u663236748_login_system';
+        $userName = 'u663236748_root';
+        $password = 'Mamao123Mamao';
         try {
             return new PDO("mysql:host=$hostName;dbname=$dbName", $userName, $password);
             echo "conectado";
