@@ -4,21 +4,31 @@ namespace LucasAlbuquerque\LoginSystem\Infrastructure;
 
 use PDO;
 use PDOException;
+use RuntimeException;
 
 class DatabaseConnection
 {
     public static function connect()
     {
-        $hostName = 'localhost';
-        $dbName = 'u663236748_login_system';
-        $userName = 'u663236748_root';
-        $password = 'Mamao123Mamao';
+        $configPath = dirname(__DIR__, 2) . '/config/database.php';
+
+        if (!file_exists($configPath)) {
+            throw new RuntimeException(
+                'Database configuration not found. Copy config/database.example.php to config/database.php.'
+            );
+        }
+
+        $config = require $configPath;
+
+        $hostName = $config['host'];
+        $dbName = $config['database'];
+        $userName = $config['username'];
+        $password = $config['password'];
+
         try {
             return new PDO("mysql:host=$hostName;dbname=$dbName", $userName, $password);
-            echo "conectado";
         } catch (PDOException $PDOException) {
-            echo "Falha na conexão: " . $PDOException->getMessage() . "<br/>";
-            echo "Arquivo: " . $PDOException->getFile() . "<br/>";
+            echo 'Database connection failed.';
         }
     }
 }

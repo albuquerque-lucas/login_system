@@ -19,10 +19,11 @@ The idea for the logic and construction of this project was inspired by an artic
 2. Clone the repository: `git clone https://github.com/your-username/php-login-system.git`
 3. Navigate to the project directory: `cd php-login-system`
 4. Install the necessary dependencies: `composer install`
-5. Start a local server: `php -S localhost:port`
-6. Access the application in your browser: [http://localhost:port](http://localhost:port)
+5. Copy `config/database.example.php` to `config/database.php` and replace the fictitious values with your local MySQL configuration.
+6. Start a local server: `php -S localhost:port`
+7. Access the application in your browser: [http://localhost:port](http://localhost:port)
 
-**Note**: Before running the application, ensure that you have a MySQL server running and properly configured. Update the database connection details in the project files, such as `login_system/assets/infrastructure/DatabaseConnection.php`, to match your MySQL server settings.
+**Note**: Before running the application, ensure that you have a MySQL server running and properly configured. The local file `config/database.php` is intentionally ignored by Git. Keep only fictitious values in `config/database.example.php`.
 
 ## Features
 ✨ The PHP Login System comes with the following features to showcase my login skills:
